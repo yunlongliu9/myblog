@@ -1,5 +1,5 @@
 # myblog
-my own blog website
+my own blog website, depolyed on my windows pc as a server by means of cloudflare tunnel(free) and .tech for my hostname
 
 aim
 1. useful posts according to my experience
