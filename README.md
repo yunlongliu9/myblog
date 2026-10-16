@@ -1,6 +1,9 @@
 # myblog
 my own blog website, depolyed on my windows pc as a server by means of cloudflare tunnel(free) and .tech for my hostname
 
+[my website](https://yunlongliu.tech)
+
+
 aim
 1. useful posts according to my experience
 2. useful courses informaion about informatic to fast review which is benefical for job interview
