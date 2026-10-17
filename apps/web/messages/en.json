@@ -1,0 +1,23 @@
+{
+  "Navbar": {
+    "home": "Home",
+    "knowledge": "Knowledge",
+    "explore": "Explore",
+    "ai": "Chat with me",
+    "services": "Services",
+    "it": "IT & Technology",
+    "travel": "Travel",
+    "investment": "Investment",
+    "life": "Life & Society",
+    "feed": "Information Feed",
+    "map": "Travel Map",
+    "projects": "Projects",
+    "theme": "Theme",
+"system": "System",
+"light": "Light",
+"dark": "Dark",
+"account": "Account",
+"login": "Login",
+"register": "Register"
+  }
+}

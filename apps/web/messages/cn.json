@@ -1,0 +1,23 @@
+{
+  "Navbar": {
+    "home": "首页",
+    "knowledge": "知识库",
+    "explore": "探索",
+    "ai": "与我聊天",
+    "services": "服务",
+    "it": "信息技术",
+    "travel": "旅行",
+    "investment": "投资",
+    "life": "生活与社会",
+    "feed": "信息动态",
+    "map": "旅行地图",
+    "projects": "项目",
+    "theme": "主题",
+"system": "跟随系统",
+"light": "浅色",
+"dark": "深色",
+"account": "账户",
+"login": "登录",
+"register": "注册"
+  }
+}

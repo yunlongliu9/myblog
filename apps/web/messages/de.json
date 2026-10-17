@@ -1,0 +1,23 @@
+{
+  "Navbar": {
+    "home": "Startseite",
+    "knowledge": "Wissen",
+    "explore": "Entdecken",
+    "ai": "Chatte mit mir",
+    "services": "Dienstleistungen",
+    "it": "IT & Technologie",
+    "travel": "Reisen",
+    "investment": "Investitionen",
+    "life": "Leben & Gesellschaft",
+    "feed": "Informationsfeed",
+    "map": "Reisekarte",
+    "projects": "Projekte",
+    "theme": "Design",
+"system": "System",
+"light": "Hell",
+"dark": "Dunkel",
+"account": "Benutzerkonto",
+"login": "Anmelden",
+"register": "Registrieren"
+  }
+}

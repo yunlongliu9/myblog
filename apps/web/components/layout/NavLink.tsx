@@ -18,7 +18,8 @@ export default function NavLink({label, href}: NavLinkeProps) {
             className = {`transition-colors 
                 ${isActive?"font-semibold text-blue-500": "hover:text-blue-500"}`
             }
-        >
+            
+    >
         {label}
         </Link>
     );
