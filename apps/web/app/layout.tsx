@@ -4,7 +4,14 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import {NextIntlClientProvider} from "next-intl";
 import {getMessages} from "next-intl/server";
+import type { Viewport } from "next";
+export const viewport: Viewport = {
 
+  width: "device-width",
+
+  initialScale: 1,
+
+};
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

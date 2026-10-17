@@ -126,13 +126,21 @@ useEffect(() => {
                 {item.label}
               </Link>
             ))}
-            <div className="mt-4 flex flex-col gap-4 border-t border-zinc-200 pt-4 dark:border-zinc-700">
+<div className="mt-4 flex flex-col gap-4 border-t border-zinc-200 pt-4 dark:border-zinc-700">
 
-        <LanguageSwitcher />
+  <div className="w-full [&_select]:w-full">
 
-        <ThemeSwitcher />
+    <LanguageSwitcher />
 
-        </div>
+  </div>
+
+  <div className="w-full [&_select]:w-full">
+
+    <ThemeSwitcher />
+
+  </div>
+
+</div>
           </div>
         </div>
       )}
