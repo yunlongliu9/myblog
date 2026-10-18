@@ -1,4 +1,13 @@
-{
+{"Footer": {
+  "description": "Technologie, Fotografie, Reisen und Gedanken.",
+  "navigation": "Navigation",
+  "connect": "Kontakt & Netzwerke",
+  "home": "Startseite",
+  "projects": "Projekte",
+  "travel": "Reisen",
+  "services": "Dienstleistungen",
+  "rights": "Alle Rechte vorbehalten."
+},
   "Navbar": {
     "home": "Startseite",
     "knowledge": "Wissen",

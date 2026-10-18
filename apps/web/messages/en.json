@@ -1,4 +1,22 @@
-{
+{"Footer": {
+
+  "description": "Technology, photography, travel and thoughts.",
+
+  "navigation": "Navigation",
+
+  "connect": "Connect",
+
+  "home": "Home",
+
+  "projects": "Projects",
+
+  "travel": "Travel",
+
+  "services": "Services",
+
+  "rights": "All rights reserved."
+
+},
   "Navbar": {
     "home": "Home",
     "knowledge": "Knowledge",

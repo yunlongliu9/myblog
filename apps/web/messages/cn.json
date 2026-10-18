@@ -1,4 +1,13 @@
-{
+{"Footer": {
+  "description": "技术、摄影、旅行与思考。",
+  "navigation": "网站导航",
+  "connect": "联系与社交",
+  "home": "首页",
+  "projects": "项目",
+  "travel": "旅行",
+  "services": "服务",
+  "rights": "保留所有权利。"
+},
   "Navbar": {
     "home": "首页",
     "knowledge": "知识库",
