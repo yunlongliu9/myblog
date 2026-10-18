@@ -1,99 +1,78 @@
 import Container from "@/components/ui/Container";
 import Section from "@/components/ui/Section";
-import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import PageHeader from "@/components/ui/PageHeader";
-import Badge from "@/components/ui/Badge";
 import ImageCard from "@/components/ui/ImageCard";
+import GlassCard from "@/components/ui/GlassCard";
+import HomeBackground from "@/components/home/HomeBackground";
+
 export default function HomePage() {
   return (
-    <main>
-      <Section>
-        <Container>
-          <PageHeader
-            title="Welcome to my world"
-            description="Technology, photography, travel and thoughts."
-          />
+    <main className="relative isolate min-h-screen">
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <Card>
-              <h2 className="text-xl font-semibold">Technology</h2>
-              <p className="mt-3 text-zinc-500">
-                Cloud, Distributed Systems and AI.
+      {/* 第一层：背景图片 + 毛玻璃 */}
+      <HomeBackground />
+
+      {/* 第二层：页面内容 */}
+      <div className="relative z-10">
+
+        {/* Hero */}
+        <Section>
+          <Container>
+            <GlassCard>
+              <h1 className="text-4xl font-bold md:text-6xl">
+                Hello, I'm Yunlong.
+              </h1>
+
+              <p className="mt-6 text-lg text-zinc-600 dark:text-zinc-300">
+                Software Engineer | Cloud & Distributed Systems
+                <br />
+                AI Agents & Automation
               </p>
-              <div className="mt-4 flex flex-wrap gap-2">
 
-                <Badge variant="blue">Java</Badge>
-
-                <Badge variant="blue">Docker</Badge>
-
-                <Badge variant="green">Raft</Badge>
-
-                <Badge>Distributed Systems</Badge>
-
+              <div className="mt-8">
+                <Button href="/explore/projects">
+                  Explore My Work
+                </Button>
               </div>
-            </Card>
+            </GlassCard>
+          </Container>
+        </Section>
 
-            <Card>
-              <h2 className="text-xl font-semibold">Travel</h2>
-              <p className="mt-3 text-zinc-500">
-                Exploring the world through photography.
-              </p>
-            </Card>
+        {/* Photography & Travel */}
+        <Section>
+          <Container>
+            <h2 className="mb-8 text-3xl font-bold">
+              Photography & Travel
+            </h2>
 
-            <Card>
-              <h2 className="text-xl font-semibold">Thoughts</h2>
-              <p className="mt-3 text-zinc-500">
-                Notes on life, society and personal growth.
-              </p>
-            </Card>
-          </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Button variant="primary" href="/explore/projects">
-              Explore My Work
-            </Button>
+              <ImageCard
+                src="/images/travel/fish.JPG"
+                alt="Fish in Iceland"
+                title="Iceland Fish"
+                description="A fish lying on the shore of the ocean in Iceland."
+              />
 
-            <Button variant="secondary" href="/knowledge/life">
-              About Me
-            </Button>
+              <ImageCard
+                src="/images/travel/plant.JPG"
+                alt="Plants in Iceland"
+                title="Plants in Iceland"
+                description="Plants surviving on volcanic rocks in Iceland."
+              />
 
-            <Button variant="outline" href="/knowledge/it">
-              Read More
-            </Button>
-          </div>
-        </Container>
-      </Section>
-      <Section>
-  <Container>
-    <h2 className="mb-8 text-3xl font-bold">
-      Photography & Travel
-    </h2>
+              <ImageCard
+                src="/images/travel/church.jpeg"
+                alt="Church in Iceland"
+                title="Icelandic Church"
+                description="A solitary church standing against the Icelandic landscape."
+              />
 
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-      <ImageCard
-        src="/images/travel/fish.JPG"
-        alt="fish in iceland"
-        title="iceland fish"
-        description="fish lies on the shore of the ocean in iceland"
-      />
+            </div>
+          </Container>
+        </Section>
 
-      <ImageCard
-        src="/images/travel/plant.JPG"
-        alt="plant in iceland"
-        title="plant in iceland"
-        description="the plant survive on the volcanic rock in iceland"
-      />
-
-      <ImageCard
-        src="/images/travel/church.jpeg"
-        alt="chruch in iceland"
-        title="chruch"
-        description="iceland church alone on the mountain"
-      />
-    </div>
-  </Container>
-</Section>
+      </div>
     </main>
   );
 }
