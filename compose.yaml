@@ -10,6 +10,13 @@ services:
       context: ./apps/morgenbrief
     restart: unless-stopped
 
+  franken-job-radar:
+    build:
+      context: ./apps/franken-job-radar
+    restart: unless-stopped
+    volumes:
+      - franken-job-radar-data:/app/data
+
   nginx:
     image: nginx:alpine
     restart: unless-stopped
@@ -20,3 +27,7 @@ services:
     depends_on:
       - web
       - morgenbrief
+      - franken-job-radar
+
+volumes:
+  franken-job-radar-data:

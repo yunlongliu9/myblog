@@ -54,3 +54,19 @@ git pull --ff-only
 docker compose up -d --build --no-deps morgenbrief
 docker compose restart nginx
 ```
+
+## Franken Job Radar at /services
+
+The Services page links to the radar at `/services/franken-job-radar/`. Nginx proxies that route, including its assets and search API, to the Python service on the Compose network. The service uses the employer directory for fresh searches and stores crawl snapshots in the `franken-job-radar-data` volume. Its Sunday refresh uses the Europe/Berlin time zone.
+
+The radar was imported from [franken-job-radar at 6628e2b](https://github.com/yunlongliu9/franken-job-radar/commit/6628e2bb4e798122540d4d63f6cfd2301fbff11b) with relative frontend URLs so it works under the Services route.
+
+From the `myblog` checkout on the Windows host:
+
+```powershell
+git pull --ff-only
+docker compose up -d --build web franken-job-radar nginx
+docker compose restart nginx
+curl.exe --fail http://localhost/services
+curl.exe --fail http://localhost/services/franken-job-radar/api/status
+```
