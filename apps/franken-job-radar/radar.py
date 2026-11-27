@@ -760,7 +760,10 @@ def public_inventory(inventory, updating):
     sources = []
     jobs = []
     for source in inventory.get("sources", {}).values():
-        sources.append({key: value for key, value in source.items() if key not in ("jobs", "removed")})
+        summary = {key: value for key, value in source.items() if key not in ("jobs", "removed")}
+        coordinates = CITIES.get(source["city"])
+        summary["distance_from_nuremberg"] = distance(CENTER, coordinates) if coordinates else None
+        sources.append(summary)
         technical = source["company"] in TECH_EMPLOYERS
         for job in source["jobs"]:
             if job.get("relevance_version") == RELEVANCE_VERSION:

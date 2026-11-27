@@ -153,6 +153,10 @@ function distance(lat, lon) {
   return 12742 * Math.asin(Math.sqrt(Math.min(1, h)));
 }
 
+function formatDistance(km) {
+  return km.toLocaleString(language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " km";
+}
+
 function render() {
   if (!current) return;
   const kind = document.querySelector('input[name="kind"]:checked').value;
@@ -165,7 +169,7 @@ function render() {
   jobs.replaceChildren(...sorted.map((job) => {
     const card = element("article", "", "job");
     const text = element("div", "");
-    const metadata = [job.company, job.city, job.km.toLocaleString(language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " km", job.posted, job.unverified ? t("unverified") : ""].filter(Boolean);
+    const metadata = [job.company, job.city, formatDistance(job.km), job.posted, job.unverified ? t("unverified") : ""].filter(Boolean);
     text.append(element("h3", job.title), element("p", metadata.join(" · ")));
     const link = element("a", t("apply"));
     link.href = job.url;
@@ -201,7 +205,11 @@ function renderCoverage() {
     current?.updating ? t("coverageRunning") :
     t("coverageInitial")
   );
-  $("sources").replaceChildren(...Array.from(groups).sort(([a], [b]) => a.localeCompare(b, "de")).map(([city, entries]) => {
+  const ordered = Array.from(groups).sort(([cityA, entriesA], [cityB, entriesB]) =>
+    (entriesA[0].distance_from_nuremberg ?? Infinity) - (entriesB[0].distance_from_nuremberg ?? Infinity)
+    || cityA.localeCompare(cityB, "de")
+  );
+  $("sources").replaceChildren(...ordered.map(([city, entries]) => {
     const group = element("section", "", "coverage-city");
     const items = element("ul", "", "coverage-list");
     entries.sort((a, b) => a.company.localeCompare(b.company, "de"));
@@ -226,7 +234,9 @@ function renderCoverage() {
       }
       items.append(row);
     }
-    group.append(element("h3", city + " · " + t("sourcesCount", entries.length)), items);
+    const km = entries[0].distance_from_nuremberg;
+    const metadata = [city, Number.isFinite(km) ? formatDistance(km) : "", t("sourcesCount", entries.length)];
+    group.append(element("h3", metadata.filter(Boolean).join(" · ")), items);
     return group;
   }));
 }
