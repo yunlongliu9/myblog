@@ -8,91 +8,95 @@ const showIncomplete = $("show-incomplete");
 const incompleteView = $("incomplete-view");
 const coverageFilter = $("coverage-filter");
 const messages = {
-  title: ["Franken Job Radar", "Jobsuche in Franken"],
-  back: ["Back to Services", "Zurück zu Services"],
-  region: ["UPPER FRANCONIA / MIDDLE FRANCONIA / LOWER FRANCONIA", "OBERFRANKEN / MITTELFRANKEN / UNTERFRANKEN"],
-  intro: ["Find IT and digitalisation jobs across Franconia and apply directly on employer websites.", "Finde IT- und Digitalisierungsjobs in ganz Franken und bewirb dich direkt bei den Arbeitgebern."],
-  filters: ["Job filters", "Stellenfilter"],
-  directions: ["Fields of work", "Fachrichtungen"],
-  kind: ["Employment type", "Beschäftigungsart"],
-  locate: ["Use my location", "Meinen Standort verwenden"],
-  locationDefault: ["Sorted by straight-line distance from central Nuremberg", "Nach Luftlinie ab Nürnberger Innenstadt sortiert"],
-  start: ["Start search", "Suche starten"],
-  results: ["Search results", "Suchergebnisse"],
-  matching: ["Matching jobs", "Passende Stellen"],
-  incomplete: ["Incomplete sources", "Unvollständig gelesene Quellen"],
-  initial: ["Start a fresh search of employer websites. Sources also refresh every Sunday.", "Starte eine neue Suche auf den Karriereseiten. Die Quellen werden auch sonntags aktualisiert."],
-  all: ["All statuses", "Alle Status"],
-  partial: ["Partially read", "Teilweise gelesen"],
-  failed: ["Could not read", "Nicht lesbar"],
-  directory: ["Employer directory by city", "Arbeitgeberverzeichnis nach Stadt"],
-  cloud: ["Cloud & Distributed Systems", "Cloud und verteilte Systeme"],
-  software: ["Software Engineering", "Softwareentwicklung"],
-  security: ["IT Security & Governance", "IT-Sicherheit und Governance"],
-  bpm: ["BPM & Digital Transformation", "BPM und digitale Transformation"],
-  agent: ["AI Agent Development", "Entwicklung von KI-Agenten"],
-  cloudSecurity: ["Cloud Security & Governance", "Cloud-Sicherheit und Governance"],
-  student: ["Working student jobs & internships", "Werkstudentenstellen und Praktika"],
-  regular: ["Graduate & non-senior roles", "Berufseinstieg und Stellen ohne Senior-Level"],
-  multiple: ["Select one or more", "Mehrfachauswahl möglich"],
-  viewLabel: ["Switch result view", "Ergebnisansicht wechseln"],
-  filterLabel: ["Filter by source status", "Nach Quellenstatus filtern"],
-  robots: ["Crawl rules", "Crawler-Regeln"],
-  entry: ["Careers page", "Karriereseite"],
-  page: ["Job or listing page", "Stellen- oder Übersichtsseite"],
-  feed: ["Job feed", "Stellendatenquelle"],
-  crawl: ["Search", "Suche"],
-  gateway_connection: ["Gateway could not reach the site", "Gateway konnte die Website nicht erreichen"],
-  dns: ["DNS lookup failed", "DNS-Auflösung fehlgeschlagen"],
-  timeout: ["Request timed out", "Zeitüberschreitung"],
-  disallowed: ["Blocked by site crawl rules", "Durch Crawler-Regeln der Website gesperrt"],
-  invalid_response: ["Unsupported response format", "Nicht unterstütztes Antwortformat"],
-  connection: ["Connection failed", "Verbindung fehlgeschlagen"],
-  page_limit: ["Page limit reached", "Seitenlimit erreicht"],
-  no_job_data: ["Page reachable but no job data recognised", "Seite erreichbar, aber keine Stellendaten erkannt"],
-  internal_error: ["Parsing error", "Fehler beim Auslesen"],
-  jobsCount: ["{0} jobs", "{0} Stellen"],
-  unverified: ["Unverified", "Noch nicht verifiziert"],
-  apply: ["Apply on employer site", "Beim Arbeitgeber bewerben"],
-  emptyJobs: ["No matching jobs found in the sources checked.", "In den geprüften Quellen wurden keine passenden Stellen gefunden."],
-  coverageSummary: ["{0} partially read · {1} could not be read. You can open the employer sites directly.", "{0} teilweise gelesen · {1} nicht lesbar. Die Karriereseiten lassen sich direkt öffnen."],
-  coverageFilterEmpty: ["No sources match this filter.", "Keine Quellen entsprechen diesem Filter."],
-  coverageDone: ["No incomplete sources were recorded.", "Es wurden keine unvollständig gelesenen Quellen erfasst."],
-  coverageRunning: ["Search in progress. No incomplete sources so far.", "Suche läuft. Bisher gibt es keine unvollständig gelesenen Quellen."],
-  coverageInitial: ["Incomplete sources will appear here after a search starts.", "Nach dem Start der Suche erscheinen hier unvollständig gelesene Quellen."],
-  noReason: ["No details were recorded.", "Es wurden keine Details erfasst."],
-  pages: ["Pages attempted: {0}", "Aufgerufene Seiten: {0}"],
-  official: ["Employer careers site", "Karriereseite des Arbeitgebers"],
-  sourcesCount: ["{0} sources", "{0} Quellen"],
-  searching: ["Searching…", "Suche läuft…"],
-  runDone: ["Search complete. {0} of {1} sources checked, {2} incomplete.", "Suche abgeschlossen. {0} von {1} Quellen geprüft, {2} unvollständig."],
-  runProgress: ["Checking employer websites. {0} of {1} sources checked, {2} incomplete.", "Karriereseiten werden geprüft. {0} von {1} Quellen geprüft, {2} unvollständig."],
-  requestFailed: ["Request failed. Please try again.", "Anfrage fehlgeschlagen. Bitte erneut versuchen."],
-  busy: ["A search is already running.", "Es läuft bereits eine Suche."],
-  monitorFailed: ["Could not load search progress.", "Der Suchfortschritt konnte nicht geladen werden."],
-  runFailed: ["The search could not finish or save its results.", "Die Suche konnte nicht abgeschlossen oder gespeichert werden."],
-  selectDirection: ["Select at least one field of work.", "Wähle mindestens eine Fachrichtung aus."],
-  starting: ["Starting a fresh search…", "Eine neue Suche wird gestartet…"],
-  locationUnavailable: ["Location is unavailable. Sorted by distance from central Nuremberg.", "Standort nicht verfügbar. Sortierung ab Nürnberger Innenstadt."],
-  locationCurrent: ["Sorted by straight-line distance from your location", "Nach Luftlinie ab deinem Standort sortiert"],
-  locationFailed: ["Could not access your location. Sorted by distance from central Nuremberg.", "Kein Zugriff auf deinen Standort. Sortierung ab Nürnberger Innenstadt."],
-  inventory: ["Last saved search: {0}. Start a search to check employer websites again.", "Letzte gespeicherte Suche: {0}. Starte eine neue Suche, um die Karriereseiten erneut zu prüfen."],
-  catalog: ["Directory: {0} careers sites and {1} cities and towns. Start a search to check the sites.", "Verzeichnis: {0} Karriereseiten und {1} Städte und Gemeinden. Starte eine Suche, um die Seiten zu prüfen."],
-  directoryLoading: ["Loading the saved directory…", "Das gespeicherte Verzeichnis wird geladen…"],
-  directoryCount: ["{0} cities and towns · {1} careers sites", "{0} Städte und Gemeinden · {1} Karriereseiten"],
-  directoryFailed: ["Could not load the directory. Close and reopen it to retry.", "Das Verzeichnis konnte nicht geladen werden. Schließe und öffne es erneut."],
-  careersCount: ["{0} careers sites", "{0} Karriereseiten"],
+  title: ["Franken Job Radar", "Jobsuche in Franken", "弗兰肯求职雷达"],
+  back: ["Back to Services", "Zurück zu Services", "返回服务页"],
+  region: ["UPPER FRANCONIA / MIDDLE FRANCONIA / LOWER FRANCONIA", "OBERFRANKEN / MITTELFRANKEN / UNTERFRANKEN", "上弗兰肯 / 中弗兰肯 / 下弗兰肯"],
+  intro: ["Find IT and digitalisation jobs across Franconia and apply directly on employer websites.", "Finde IT- und Digitalisierungsjobs in ganz Franken und bewirb dich direkt bei den Arbeitgebern.", "查找弗兰肯地区的 IT 与数字化岗位，直接前往雇主官网申请。"],
+  filters: ["Job filters", "Stellenfilter", "岗位筛选"],
+  directions: ["Fields of work", "Fachrichtungen", "专业方向"],
+  kind: ["Employment type", "Beschäftigungsart", "岗位类型"],
+  locate: ["Use my location", "Meinen Standort verwenden", "使用我的位置"],
+  locationDefault: ["Sorted by straight-line distance from central Nuremberg", "Nach Luftlinie ab Nürnberger Innenstadt sortiert", "按到纽伦堡市中心的直线距离排序"],
+  start: ["Start search", "Suche starten", "开始搜索"],
+  results: ["Search results", "Suchergebnisse", "搜索结果"],
+  matching: ["Matching jobs", "Passende Stellen", "匹配岗位"],
+  incomplete: ["Incomplete sources", "Unvollständig gelesene Quellen", "未完整读取"],
+  initial: ["Start a fresh search of employer websites. Sources also refresh every Sunday.", "Starte eine neue Suche auf den Karriereseiten. Die Quellen werden auch sonntags aktualisiert.", "点击开始搜索即可重新访问企业招聘网站。每周日也会自动复查。"],
+  all: ["All statuses", "Alle Status", "全部状态"],
+  partial: ["Partially read", "Teilweise gelesen", "部分读取"],
+  failed: ["Could not read", "Nicht lesbar", "未能读取"],
+  directory: ["Employer directory by city", "Arbeitgeberverzeichnis nach Stadt", "按城市查看企业招聘目录"],
+  cloud: ["Cloud & Distributed Systems", "Cloud und verteilte Systeme", "云计算与分布式系统"],
+  software: ["Software Engineering", "Softwareentwicklung", "软件开发"],
+  security: ["IT Security & Governance", "IT-Sicherheit und Governance", "IT 安全与治理"],
+  bpm: ["BPM & Digital Transformation", "BPM und digitale Transformation", "业务流程管理与数字化转型"],
+  agent: ["AI Agent Development", "Entwicklung von KI-Agenten", "AI Agent 应用开发"],
+  cloudSecurity: ["Cloud Security & Governance", "Cloud-Sicherheit und Governance", "云安全与治理"],
+  student: ["Working student jobs & internships", "Werkstudentenstellen und Praktika", "在读岗位与实习"],
+  regular: ["Graduate & non-senior roles", "Berufseinstieg und Stellen ohne Senior-Level", "毕业后正式岗位（非高级）"],
+  multiple: ["Select one or more", "Mehrfachauswahl möglich", "可多选"],
+  viewLabel: ["Switch result view", "Ergebnisansicht wechseln", "切换结果视图"],
+  filterLabel: ["Filter by source status", "Nach Quellenstatus filtern", "按读取状态筛选"],
+  robots: ["Crawl rules", "Crawler-Regeln", "抓取规则"],
+  entry: ["Careers page", "Karriereseite", "招聘入口"],
+  page: ["Job or listing page", "Stellen- oder Übersichtsseite", "职位详情或列表"],
+  feed: ["Job feed", "Stellendatenquelle", "职位数据源"],
+  crawl: ["Search", "Suche", "本轮抓取"],
+  gateway_connection: ["Gateway could not reach the site", "Gateway konnte die Website nicht erreichen", "网络网关未连上网站"],
+  dns: ["DNS lookup failed", "DNS-Auflösung fehlgeschlagen", "域名解析失败"],
+  timeout: ["Request timed out", "Zeitüberschreitung", "请求超时"],
+  disallowed: ["Blocked by site crawl rules", "Durch Crawler-Regeln der Website gesperrt", "站点规则限制抓取"],
+  invalid_response: ["Unsupported response format", "Nicht unterstütztes Antwortformat", "响应格式不受支持"],
+  connection: ["Connection failed", "Verbindung fehlgeschlagen", "连接失败"],
+  page_limit: ["Page limit reached", "Seitenlimit erreicht", "达到抓取页数上限"],
+  no_job_data: ["Page reachable but no job data recognised", "Seite erreichbar, aber keine Stellendaten erkannt", "页面可访问，但未识别出职位数据"],
+  internal_error: ["Parsing error", "Fehler beim Auslesen", "解析异常"],
+  jobsCount: ["{0} jobs", "{0} Stellen", "{0} 个岗位"],
+  unverified: ["Unverified", "Noch nicht verifiziert", "待复核"],
+  apply: ["Apply on employer site", "Beim Arbeitgeber bewerben", "官网申请"],
+  emptyJobs: ["No matching jobs found in the sources checked.", "In den geprüften Quellen wurden keine passenden Stellen gefunden.", "已检查的来源中没有符合当前筛选条件的岗位。"],
+  coverageSummary: ["{0} partially read · {1} could not be read. You can open the employer sites directly.", "{0} teilweise gelesen · {1} nicht lesbar. Die Karriereseiten lassen sich direkt öffnen.", "{0} 个部分读取，{1} 个未能读取。可直接打开官网查看。"],
+  coverageFilterEmpty: ["No sources match this filter.", "Keine Quellen entsprechen diesem Filter.", "当前筛选下没有来源。"],
+  coverageDone: ["No incomplete sources were recorded.", "Es wurden keine unvollständig gelesenen Quellen erfasst.", "本次记录中没有未完整读取的来源。"],
+  coverageRunning: ["Search in progress. No incomplete sources so far.", "Suche läuft. Bisher gibt es keine unvollständig gelesenen Quellen.", "正在搜索，目前没有未完整读取的来源。"],
+  coverageInitial: ["Incomplete sources will appear here after a search starts.", "Nach dem Start der Suche erscheinen hier unvollständig gelesene Quellen.", "开始搜索后，这里会显示未完整读取的招聘来源。"],
+  noReason: ["No details were recorded.", "Es wurden keine Details erfasst.", "本次没有记录详细原因。"],
+  pages: ["Pages attempted: {0}", "Aufgerufene Seiten: {0}", "已尝试 {0} 页"],
+  official: ["Employer careers site", "Karriereseite des Arbeitgebers", "官网招聘入口"],
+  sourcesCount: ["{0} sources", "{0} Quellen", "{0} 个来源"],
+  searching: ["Searching…", "Suche läuft…", "正在搜索…"],
+  runDone: ["Search complete. {0} of {1} sources checked, {2} incomplete.", "Suche abgeschlossen. {0} von {1} Quellen geprüft, {2} unvollständig.", "搜索完成。已检查 {0}/{1} 个来源，其中 {2} 个未完整读取。"],
+  runProgress: ["Checking employer websites. {0} of {1} sources checked, {2} incomplete.", "Karriereseiten werden geprüft. {0} von {1} Quellen geprüft, {2} unvollständig.", "正在检查企业官网。已检查 {0}/{1} 个来源，其中 {2} 个未完整读取。"],
+  requestFailed: ["Request failed. Please try again.", "Anfrage fehlgeschlagen. Bitte erneut versuchen.", "请求失败，请重试。"],
+  busy: ["A search is already running.", "Es läuft bereits eine Suche.", "已有一轮搜索正在运行。"],
+  monitorFailed: ["Could not load search progress.", "Der Suchfortschritt konnte nicht geladen werden.", "无法读取搜索进度。"],
+  runFailed: ["The search could not finish or save its results.", "Die Suche konnte nicht abgeschlossen oder gespeichert werden.", "搜索未能完成或保存结果。"],
+  selectDirection: ["Select at least one field of work.", "Wähle mindestens eine Fachrichtung aus.", "请至少选择一个专业方向。"],
+  starting: ["Starting a fresh search…", "Eine neue Suche wird gestartet…", "正在启动新一轮搜索…"],
+  locationUnavailable: ["Location is unavailable. Sorted by distance from central Nuremberg.", "Standort nicht verfügbar. Sortierung ab Nürnberger Innenstadt.", "浏览器定位不可用，将按到纽伦堡市中心的距离排序。"],
+  locationCurrent: ["Sorted by straight-line distance from your location", "Nach Luftlinie ab deinem Standort sortiert", "按到你当前位置的直线距离排序"],
+  locationFailed: ["Could not access your location. Sorted by distance from central Nuremberg.", "Kein Zugriff auf deinen Standort. Sortierung ab Nürnberger Innenstadt.", "未能获取你的位置，将按到纽伦堡市中心的距离排序。"],
+  inventory: ["Last saved search: {0}. Start a search to check employer websites again.", "Letzte gespeicherte Suche: {0}. Starte eine neue Suche, um die Karriereseiten erneut zu prüfen.", "最近保存的搜索记录：{0}。开始搜索可重新查询企业官网。"],
+  catalog: ["Directory: {0} careers sites and {1} cities and towns. Start a search to check the sites.", "Verzeichnis: {0} Karriereseiten und {1} Städte und Gemeinden. Starte eine Suche, um die Seiten zu prüfen.", "目录包含 {0} 个招聘入口和 {1} 个城市及市镇。点击开始搜索以检查官网。"],
+  directoryLoading: ["Loading the saved directory…", "Das gespeicherte Verzeichnis wird geladen…", "正在读取已保存的目录…"],
+  directoryCount: ["{0} cities and towns · {1} careers sites", "{0} Städte und Gemeinden · {1} Karriereseiten", "{0} 个城市和市镇 · {1} 个招聘入口"],
+  directoryFailed: ["Could not load the directory. Close and reopen it to retry.", "Das Verzeichnis konnte nicht geladen werden. Schließe und öffne es erneut.", "读取目录失败，请合上后重新打开。"],
+  careersCount: ["{0} careers sites", "{0} Karriereseiten", "{0} 个招聘入口"],
+  languageLabel: ["Page language", "Seitensprache", "页面语言"],
 };
+const locales = ["en", "de", "zh-Hans"];
+const languageButtons = document.querySelectorAll("[data-locale]");
 let language = "en";
 try {
-  if (localStorage.getItem("franken-radar-language") === "de") language = "de";
+  const saved = localStorage.getItem("franken-radar-language");
+  if (locales.includes(saved)) language = saved;
 } catch {}
 let statusMessage = ["initial"];
 let locationMessage = "locationDefault";
 let directoryMessage;
 
 function t(key, ...args) {
-  return (messages[key]?.[language === "de" ? 1 : 0] || key)
+  return (messages[key]?.[locales.indexOf(language)] || key)
     .replace(/\{(\d+)\}/g, (_, index) => args[index]);
 }
 
@@ -119,9 +123,9 @@ function applyLanguage() {
   document.documentElement.lang = language;
   for (const node of document.querySelectorAll("[data-i18n]")) node.textContent = t(node.dataset.i18n);
   for (const node of document.querySelectorAll("[data-i18n-label]")) node.setAttribute("aria-label", t(node.dataset.i18nLabel));
-  const switcher = $("language-switch");
-  switcher.lang = language === "en" ? "de" : "en";
-  switcher.textContent = language === "en" ? "Deutsch" : "English";
+  for (const button of languageButtons) {
+    button.setAttribute("aria-pressed", String(button.dataset.locale === language));
+  }
   start.textContent = t(start.disabled ? "searching" : "start");
   $("location").textContent = t(locationMessage);
   if (directoryMessage) $("directory-status").textContent = t(...directoryMessage);
@@ -133,11 +137,13 @@ function applyLanguage() {
   render();
 }
 
-$("language-switch").addEventListener("click", () => {
-  language = language === "en" ? "de" : "en";
-  try { localStorage.setItem("franken-radar-language", language); } catch {}
-  applyLanguage();
-});
+for (const button of languageButtons) {
+  button.addEventListener("click", () => {
+    language = button.dataset.locale;
+    try { localStorage.setItem("franken-radar-language", language); } catch {}
+    applyLanguage();
+  });
+}
 
 let origin = [49.4521, 11.0767];
 let current;

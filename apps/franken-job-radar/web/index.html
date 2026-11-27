@@ -8,7 +8,11 @@
 <script defer src="./app.js"></script>
 </head>
 <body>
-<header class="top"><div class="wrap"><a href="./" class="brand"><span class="mark" aria-hidden="true">◎</span> Franken <strong>Job Radar</strong></a><div class="header-actions"><a class="service-back" href="/services" data-i18n="back">Back to Services</a><button type="button" class="language-switch" id="language-switch" lang="de">Deutsch</button></div></div></header>
+<header class="top"><div class="wrap"><a href="./" class="brand"><span class="mark" aria-hidden="true">◎</span> Franken <strong>Job Radar</strong></a><div class="header-actions"><a class="service-back" href="/services" data-i18n="back">Back to Services</a><div class="language-options" role="group" aria-label="Page language" data-i18n-label="languageLabel">
+  <button type="button" class="language-switch" data-locale="en" lang="en" aria-pressed="true">English</button>
+  <button type="button" class="language-switch" data-locale="de" lang="de" aria-pressed="false">Deutsch</button>
+  <button type="button" class="language-switch" data-locale="zh-Hans" lang="zh-Hans" aria-pressed="false">中文</button>
+</div></div></div></header>
 <main class="wrap">
   <section class="hero">
     <p class="eyebrow" data-i18n="region">UPPER FRANCONIA / MIDDLE FRANCONIA / LOWER FRANCONIA</p>

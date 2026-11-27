@@ -93,3 +93,10 @@ footer { padding: 1.7rem 0; color: var(--mute); font-size: .875rem; letter-spaci
 
 .header-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .45rem .8rem; }
 .language-switch { min-height: 2.5rem; padding: .35rem .65rem; border: 1px solid #8db7ff; border-radius: .55rem; background: transparent; color: #eaf2ff; font-weight: 650; }
+
+.language-options { display: flex; flex-wrap: wrap; gap: .25rem; }
+.language-switch[aria-pressed="true"] { background: #eaf2ff; color: #0e2443; }
+@media (max-width: 33rem) {
+  .top .wrap { flex-wrap: wrap; padding-block: .65rem; }
+  .header-actions { justify-content: flex-start; }
+}
