@@ -7,22 +7,138 @@ const showJobs = $("show-jobs");
 const showIncomplete = $("show-incomplete");
 const incompleteView = $("incomplete-view");
 const coverageFilter = $("coverage-filter");
-const crawlStages = { robots: "抓取规则", entry: "招聘入口", page: "详情或列表", feed: "职位数据源", crawl: "本轮抓取" };
-const crawlIssues = {
-  gateway_connection: "网络网关未连上网站", dns: "域名解析失败", timeout: "请求超时",
-  disallowed: "站点规则限制", invalid_response: "响应格式不受支持", connection: "连接失败",
-  page_limit: "达到抓取范围上限", no_job_data: "页面可访问，未识别职位数据", internal_error: "解析异常",
+const messages = {
+  title: ["Franken Job Radar", "Jobsuche in Franken"],
+  back: ["Back to Services", "Zurück zu Services"],
+  region: ["UPPER FRANCONIA / MIDDLE FRANCONIA / LOWER FRANCONIA", "OBERFRANKEN / MITTELFRANKEN / UNTERFRANKEN"],
+  intro: ["Find IT and digitalisation jobs across Franconia and apply directly on employer websites.", "Finde IT- und Digitalisierungsjobs in ganz Franken und bewirb dich direkt bei den Arbeitgebern."],
+  filters: ["Job filters", "Stellenfilter"],
+  directions: ["Fields of work", "Fachrichtungen"],
+  kind: ["Employment type", "Beschäftigungsart"],
+  locate: ["Use my location", "Meinen Standort verwenden"],
+  locationDefault: ["Sorted by straight-line distance from central Nuremberg", "Nach Luftlinie ab Nürnberger Innenstadt sortiert"],
+  start: ["Start search", "Suche starten"],
+  results: ["Search results", "Suchergebnisse"],
+  matching: ["Matching jobs", "Passende Stellen"],
+  incomplete: ["Incomplete sources", "Unvollständig gelesene Quellen"],
+  initial: ["Start a fresh search of employer websites. Sources also refresh every Sunday.", "Starte eine neue Suche auf den Karriereseiten. Die Quellen werden auch sonntags aktualisiert."],
+  all: ["All statuses", "Alle Status"],
+  partial: ["Partially read", "Teilweise gelesen"],
+  failed: ["Could not read", "Nicht lesbar"],
+  directory: ["Employer directory by city", "Arbeitgeberverzeichnis nach Stadt"],
+  cloud: ["Cloud & Distributed Systems", "Cloud und verteilte Systeme"],
+  software: ["Software Engineering", "Softwareentwicklung"],
+  security: ["IT Security & Governance", "IT-Sicherheit und Governance"],
+  bpm: ["BPM & Digital Transformation", "BPM und digitale Transformation"],
+  agent: ["AI Agent Development", "Entwicklung von KI-Agenten"],
+  cloudSecurity: ["Cloud Security & Governance", "Cloud-Sicherheit und Governance"],
+  student: ["Working student jobs & internships", "Werkstudentenstellen und Praktika"],
+  regular: ["Graduate & non-senior roles", "Berufseinstieg und Stellen ohne Senior-Level"],
+  multiple: ["Select one or more", "Mehrfachauswahl möglich"],
+  viewLabel: ["Switch result view", "Ergebnisansicht wechseln"],
+  filterLabel: ["Filter by source status", "Nach Quellenstatus filtern"],
+  robots: ["Crawl rules", "Crawler-Regeln"],
+  entry: ["Careers page", "Karriereseite"],
+  page: ["Job or listing page", "Stellen- oder Übersichtsseite"],
+  feed: ["Job feed", "Stellendatenquelle"],
+  crawl: ["Search", "Suche"],
+  gateway_connection: ["Gateway could not reach the site", "Gateway konnte die Website nicht erreichen"],
+  dns: ["DNS lookup failed", "DNS-Auflösung fehlgeschlagen"],
+  timeout: ["Request timed out", "Zeitüberschreitung"],
+  disallowed: ["Blocked by site crawl rules", "Durch Crawler-Regeln der Website gesperrt"],
+  invalid_response: ["Unsupported response format", "Nicht unterstütztes Antwortformat"],
+  connection: ["Connection failed", "Verbindung fehlgeschlagen"],
+  page_limit: ["Page limit reached", "Seitenlimit erreicht"],
+  no_job_data: ["Page reachable but no job data recognised", "Seite erreichbar, aber keine Stellendaten erkannt"],
+  internal_error: ["Parsing error", "Fehler beim Auslesen"],
+  jobsCount: ["{0} jobs", "{0} Stellen"],
+  unverified: ["Unverified", "Noch nicht verifiziert"],
+  apply: ["Apply on employer site", "Beim Arbeitgeber bewerben"],
+  emptyJobs: ["No matching jobs found in the sources checked.", "In den geprüften Quellen wurden keine passenden Stellen gefunden."],
+  coverageSummary: ["{0} partially read · {1} could not be read. You can open the employer sites directly.", "{0} teilweise gelesen · {1} nicht lesbar. Die Karriereseiten lassen sich direkt öffnen."],
+  coverageFilterEmpty: ["No sources match this filter.", "Keine Quellen entsprechen diesem Filter."],
+  coverageDone: ["No incomplete sources were recorded.", "Es wurden keine unvollständig gelesenen Quellen erfasst."],
+  coverageRunning: ["Search in progress. No incomplete sources so far.", "Suche läuft. Bisher gibt es keine unvollständig gelesenen Quellen."],
+  coverageInitial: ["Incomplete sources will appear here after a search starts.", "Nach dem Start der Suche erscheinen hier unvollständig gelesene Quellen."],
+  noReason: ["No details were recorded.", "Es wurden keine Details erfasst."],
+  pages: ["Pages attempted: {0}", "Aufgerufene Seiten: {0}"],
+  official: ["Employer careers site", "Karriereseite des Arbeitgebers"],
+  sourcesCount: ["{0} sources", "{0} Quellen"],
+  searching: ["Searching…", "Suche läuft…"],
+  runDone: ["Search complete. {0} of {1} sources checked, {2} incomplete.", "Suche abgeschlossen. {0} von {1} Quellen geprüft, {2} unvollständig."],
+  runProgress: ["Checking employer websites. {0} of {1} sources checked, {2} incomplete.", "Karriereseiten werden geprüft. {0} von {1} Quellen geprüft, {2} unvollständig."],
+  requestFailed: ["Request failed. Please try again.", "Anfrage fehlgeschlagen. Bitte erneut versuchen."],
+  busy: ["A search is already running.", "Es läuft bereits eine Suche."],
+  monitorFailed: ["Could not load search progress.", "Der Suchfortschritt konnte nicht geladen werden."],
+  runFailed: ["The search could not finish or save its results.", "Die Suche konnte nicht abgeschlossen oder gespeichert werden."],
+  selectDirection: ["Select at least one field of work.", "Wähle mindestens eine Fachrichtung aus."],
+  starting: ["Starting a fresh search…", "Eine neue Suche wird gestartet…"],
+  locationUnavailable: ["Location is unavailable. Sorted by distance from central Nuremberg.", "Standort nicht verfügbar. Sortierung ab Nürnberger Innenstadt."],
+  locationCurrent: ["Sorted by straight-line distance from your location", "Nach Luftlinie ab deinem Standort sortiert"],
+  locationFailed: ["Could not access your location. Sorted by distance from central Nuremberg.", "Kein Zugriff auf deinen Standort. Sortierung ab Nürnberger Innenstadt."],
+  inventory: ["Last saved search: {0}. Start a search to check employer websites again.", "Letzte gespeicherte Suche: {0}. Starte eine neue Suche, um die Karriereseiten erneut zu prüfen."],
+  catalog: ["Directory: {0} careers sites and {1} cities and towns. Start a search to check the sites.", "Verzeichnis: {0} Karriereseiten und {1} Städte und Gemeinden. Starte eine Suche, um die Seiten zu prüfen."],
+  directoryLoading: ["Loading the saved directory…", "Das gespeicherte Verzeichnis wird geladen…"],
+  directoryCount: ["{0} cities and towns · {1} careers sites", "{0} Städte und Gemeinden · {1} Karriereseiten"],
+  directoryFailed: ["Could not load the directory. Close and reopen it to retry.", "Das Verzeichnis konnte nicht geladen werden. Schließe und öffne es erneut."],
+  careersCount: ["{0} careers sites", "{0} Karriereseiten"],
 };
+let language = "en";
+try {
+  if (localStorage.getItem("franken-radar-language") === "de") language = "de";
+} catch {}
+let statusMessage = ["initial"];
+let locationMessage = "locationDefault";
+let directoryMessage;
+
+function t(key, ...args) {
+  return (messages[key]?.[language === "de" ? 1 : 0] || key)
+    .replace(/\{(\d+)\}/g, (_, index) => args[index]);
+}
+
+function message(key, ...args) {
+  statusMessage = [key, ...args];
+  renderStatus();
+}
+
+function renderStatus() {
+  const [key, ...args] = statusMessage;
+  const values = key === "inventory" ? [new Date(args[0]).toLocaleString(language)] : args;
+  status.textContent = t(key, ...values);
+}
 
 function describeIssues(issues = {}) {
   return Object.entries(issues).map(([code, count]) => {
     const [stage, reason] = code.split(":");
-    return crawlStages[stage] + "：" + (crawlIssues[reason] || reason.replace("http_", "HTTP "))
+    return t(stage) + ": " + (reason.startsWith("http_") ? reason.replace("http_", "HTTP ") : t(reason))
       + (count > 1 ? " × " + count : "");
-  }).join("，");
+  }).join(" · ");
 }
 
-const sourceStatus = { partial: "部分读取", failed: "未能读取" };
+function applyLanguage() {
+  document.documentElement.lang = language;
+  for (const node of document.querySelectorAll("[data-i18n]")) node.textContent = t(node.dataset.i18n);
+  for (const node of document.querySelectorAll("[data-i18n-label]")) node.setAttribute("aria-label", t(node.dataset.i18nLabel));
+  const switcher = $("language-switch");
+  switcher.lang = language === "en" ? "de" : "en";
+  switcher.textContent = language === "en" ? "Deutsch" : "English";
+  start.textContent = t(start.disabled ? "searching" : "start");
+  $("location").textContent = t(locationMessage);
+  if (directoryMessage) $("directory-status").textContent = t(...directoryMessage);
+  for (const node of document.querySelectorAll("[data-careers-count]")) {
+    node.textContent = t("careersCount", node.dataset.careersCount);
+  }
+  renderStatus();
+  renderCoverage();
+  render();
+}
+
+$("language-switch").addEventListener("click", () => {
+  language = language === "en" ? "de" : "en";
+  try { localStorage.setItem("franken-radar-language", language); } catch {}
+  applyLanguage();
+});
+
 let origin = [49.4521, 11.0767];
 let current;
 
@@ -49,26 +165,26 @@ function render() {
   const unique = new Map(matching.map((job) => [JSON.stringify([job.url, job.city]), job]));
   const sorted = Array.from(unique.values(), (job) => ({ ...job, km: distance(job.lat, job.lon) }));
   sorted.sort((a, b) => a.km - b.km || b.posted.localeCompare(a.posted) || a.title.localeCompare(b.title));
-  $("count").textContent = sorted.length + " 个岗位";
+  $("count").textContent = t("jobsCount", sorted.length);
   jobs.replaceChildren(...sorted.map((job) => {
     const card = element("article", "", "job");
     const text = element("div", "");
-    const metadata = [job.company, job.city, job.km.toFixed(1) + " km", job.posted, job.unverified ? "待复核" : ""].filter(Boolean);
+    const metadata = [job.company, job.city, job.km.toLocaleString(language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " km", job.posted, job.unverified ? t("unverified") : ""].filter(Boolean);
     text.append(element("h3", job.title), element("p", metadata.join(" · ")));
-    const link = element("a", "官网申请");
+    const link = element("a", t("apply"));
     link.href = job.url;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.setAttribute("aria-label", job.title + " · 官网申请");
+    link.setAttribute("aria-label", job.title + " · " + t("apply"));
     card.append(text, link);
     return card;
   }));
-  if (current.done && sorted.length === 0) jobs.append(element("p", "这轮已读取的来源中没有符合当前筛选条件的岗位。", "note"));
+  if (current.done && sorted.length === 0) jobs.append(element("p", t("emptyJobs"), "note"));
 }
 
 function renderCoverage() {
   const incomplete = (current?.sources || []).filter(({ status }) => status !== "ok");
-  showIncomplete.textContent = incomplete.length ? "未完整读取 · " + incomplete.length : "未完整读取";
+  showIncomplete.textContent = t("incomplete") + (incomplete.length ? " · " + incomplete.length : "");
   if (incompleteView.hidden) return;
   const partial = incomplete.filter(({ status }) => status === "partial").length;
   const selection = coverageFilter.value;
@@ -81,13 +197,13 @@ function renderCoverage() {
 
   coverageFilter.disabled = !incomplete.length;
   $("coverage-summary").textContent = incomplete.length
-    ? partial + " 个部分读取 · " + (incomplete.length - partial) + " 个未能读取。可直接打开官网查看。"
+    ? t("coverageSummary", partial, incomplete.length - partial)
     : "";
   $("coverage-empty").textContent = visible.length ? "" : (
-    incomplete.length ? "当前筛选下没有来源。" :
-    current?.done ? "本次记录中没有未完整读取的来源。" :
-    start.disabled ? "正在抓取，目前没有未完整读取的来源。" :
-    "开始搜索后，这里会显示未完整读取的招聘来源。"
+    incomplete.length ? t("coverageFilterEmpty") :
+    current?.done ? t("coverageDone") :
+    start.disabled ? t("coverageRunning") :
+    t("coverageInitial")
   );
   $("sources").replaceChildren(...Array.from(groups).sort(([a], [b]) => a.localeCompare(b, "de")).map(([city, entries]) => {
     const group = element("section", "", "coverage-city");
@@ -97,24 +213,24 @@ function renderCoverage() {
       const row = element("li", "", "coverage-card");
       const text = element("div", "", "coverage-copy");
       const heading = element("div", "", "coverage-heading");
-      heading.append(element("h4", source.company), element("span", sourceStatus[source.status] || "待复核", "coverage-state " + source.status));
-      const reason = describeIssues(source.issues) || "本次记录没有详细原因。";
+      heading.append(element("h4", source.company), element("span", t(source.status === "partial" || source.status === "failed" ? source.status : "unverified"), "coverage-state " + source.status));
+      const reason = describeIssues(source.issues) || t("noReason");
       text.append(heading, element("p", reason, "note"));
       if (Number.isInteger(source.pages)) {
-        text.append(element("p", "尝试 " + source.pages + " 页", "note"));
+        text.append(element("p", t("pages", source.pages), "note"));
       }
       row.append(text);
       if (source.url) {
-        const link = element("a", "官网招聘入口", "coverage-link");
+        const link = element("a", t("official"), "coverage-link");
         link.href = source.url;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
-        link.setAttribute("aria-label", source.company + " · 官网招聘入口");
+        link.setAttribute("aria-label", source.company + " · " + t("official"));
         row.append(link);
       }
       items.append(row);
     }
-    group.append(element("h3", city + " · " + entries.length + " 个来源"), items);
+    group.append(element("h3", city + " · " + t("sourcesCount", entries.length)), items);
     return group;
   }));
 }
@@ -134,13 +250,13 @@ coverageFilter.addEventListener("change", renderCoverage);
 async function request(path, options) {
   const response = await fetch(path, options);
   const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "请求失败");
+  if (!response.ok) throw new Error(response.status === 409 ? "busy" : "requestFailed");
   return data;
 }
 
 async function monitor(id) {
   start.disabled = true;
-  start.textContent = "正在抓取";
+  start.textContent = t("searching");
   progress.hidden = false;
   try {
     while (true) {
@@ -151,24 +267,23 @@ async function monitor(id) {
       const incomplete = sources.filter((source) => source.status !== "ok").length;
       progress.max = total || 1;
       progress.value = sources.length;
-      status.textContent = error || (done ? "本轮结束。 " : "正在重新访问企业官网。 ")
-        + sources.length + " / " + total + " 个来源已检查，" + incomplete + " 个未完整读取。";
+      message(error ? "runFailed" : done ? "runDone" : "runProgress", sources.length, total, incomplete);
       if (lastSourceCount !== sources.length || wasDone !== done) renderCoverage();
       render();
       if (done) break;
       await new Promise((resolve) => setTimeout(resolve, 800));
     }
   } catch (error) {
-    status.textContent = "读取进度失败。 " + error.message;
+    message("monitorFailed");
   } finally {
     start.disabled = false;
-    start.textContent = "开始搜索";
+    start.textContent = t("start");
   }
 }
 
 start.addEventListener("click", async () => {
   if (!document.querySelector('input[name="direction"]:checked')) {
-    status.textContent = "请至少选择一个专业方向。";
+    message("selectDirection");
     return;
   }
   start.disabled = true;
@@ -179,25 +294,26 @@ start.addEventListener("click", async () => {
     $("count").textContent = "";
     coverageFilter.value = "all";
     renderCoverage();
-    status.textContent = "正在启动新一轮搜索。";
+    message("starting");
     await monitor(id);
   } catch (error) {
-    status.textContent = error.message;
+    message(error.message === "busy" ? "busy" : "requestFailed");
     start.disabled = false;
+    start.textContent = t("start");
   }
 });
 document.querySelector(".filters").addEventListener("change", render);
 $("locate").addEventListener("click", () => {
   if (!navigator.geolocation) {
-    $("location").textContent = "浏览器定位不可用，按距纽伦堡市中心排序。";
+    $("location").textContent = t(locationMessage = "locationUnavailable");
     return;
   }
   navigator.geolocation.getCurrentPosition(({ coords }) => {
     origin = [coords.latitude, coords.longitude];
-    $("location").textContent = "按距你当前位置的直线距离排序";
+    $("location").textContent = t(locationMessage = "locationCurrent");
     render();
   }, () => {
-    $("location").textContent = "未获取定位，按距纽伦堡市中心排序。";
+    $("location").textContent = t(locationMessage = "locationFailed");
     origin = [49.4521, 11.0767];
     render();
   }, { timeout: 8000 });
@@ -210,21 +326,20 @@ request("./api/status").then(async ({ active, total, cities, inventory }) => {
     const snapshot = await request("./api/inventory");
     if (current || start.disabled) return;
     current = snapshot;
-    status.textContent = "最近保存的盘点 · " + new Date(snapshot.finished).toLocaleString("zh-CN")
-      + "。点击开始搜索会重新访问企业官网。";
+    message("inventory", snapshot.finished);
     renderCoverage();
     render();
   } else if (!current && !start.disabled) {
-    status.textContent = "当前清单有 " + total + " 个招聘来源，地点表含 " + cities + " 个城市和市镇。点击开始搜索，每周日也会自动复查。";
+    message("catalog", total, cities);
   }
 }).catch(() => {});
 
 const directory = $("directory");
 directory.addEventListener("toggle", async () => {
   if (!directory.open || directory.dataset.loaded) return;
-  const message = $("directory-status");
+  const directoryStatus = $("directory-status");
   directory.dataset.loaded = "loading";
-  message.textContent = "正在读取已保存的目录。";
+  directoryStatus.textContent = t(...(directoryMessage = ["directoryLoading"]));
   try {
     const { cities, total } = await request("./api/employers");
     $("directory-cities").replaceChildren(...cities.map(({ city, employers }) => {
@@ -239,13 +354,19 @@ directory.addEventListener("toggle", async () => {
         row.append(link);
         list.append(row);
       }
-      group.append(element("summary", city + " · " + employers.length + " 个入口"), list);
+      const summary = element("summary", city + " · ");
+      const count = element("span", t("careersCount", employers.length));
+      count.dataset.careersCount = employers.length;
+      summary.append(count);
+      group.append(summary, list);
       return group;
     }));
-    message.textContent = cities.length + " 个城市和市镇 · " + total + " 个招聘入口";
+    directoryStatus.textContent = t(...(directoryMessage = ["directoryCount", cities.length, total]));
     directory.dataset.loaded = "ready";
   } catch (error) {
-    message.textContent = "读取目录失败。合上后重新展开可重试。";
+    directoryStatus.textContent = t(...(directoryMessage = ["directoryFailed"]));
     delete directory.dataset.loaded;
   }
 });
+
+applyLanguage();

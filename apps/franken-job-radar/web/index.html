@@ -1,46 +1,46 @@
 <!doctype html>
-<html lang="zh-Hans">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Franken Job Radar · 弗兰肯求职雷达</title>
+<title data-i18n="title">Franken Job Radar</title>
 <link rel="stylesheet" href="./style.css">
 <script defer src="./app.js"></script>
 </head>
 <body>
-<header class="top"><div class="wrap"><a href="./" class="brand"><span class="mark" aria-hidden="true">◎</span> Franken <strong>Job Radar</strong></a><a class="service-back" href="/services">返回 Services</a></div></header>
+<header class="top"><div class="wrap"><a href="./" class="brand"><span class="mark" aria-hidden="true">◎</span> Franken <strong>Job Radar</strong></a><div class="header-actions"><a class="service-back" href="/services" data-i18n="back">Back to Services</a><button type="button" class="language-switch" id="language-switch" lang="de">Deutsch</button></div></div></header>
 <main class="wrap">
   <section class="hero">
-    <p class="eyebrow">OBERFRANKEN / MITTELFRANKEN / UNTERFRANKEN</p>
-    <h1>弗兰肯<span>求职雷达</span></h1>
-    <p>从纽伦堡出发，查找整个弗兰肯的 IT 与数字化岗位，直接前往雇主官网申请。</p>
+    <p class="eyebrow" data-i18n="region">UPPER FRANCONIA / MIDDLE FRANCONIA / LOWER FRANCONIA</p>
+    <h1 data-i18n="title">Franken Job Radar</h1>
+    <p data-i18n="intro">Find IT and digitalisation jobs across Franconia and apply directly on employer websites.</p>
   </section>
   <section class="filters" aria-labelledby="search-heading">
-    <h2 id="search-heading">岗位筛选</h2>
-    <fieldset><legend>专业方向 <small>可多选</small></legend>
+    <h2 id="search-heading" data-i18n="filters">Job filters</h2>
+    <fieldset><legend><span data-i18n="directions">Fields of work</span> <small data-i18n="multiple">Select one or more</small></legend>
     <div class="directions">
-      <label><input type="checkbox" name="direction" value="cloud" checked><span>云计算与分布式计算<small>Cloud &amp; Distributed Systems</small></span></label>
-      <label><input type="checkbox" name="direction" value="software" checked><span>软件开发<small>Software Engineering</small></span></label>
-      <label><input type="checkbox" name="direction" value="security" checked><span>IT 安全与治理<small>IT Security &amp; Governance</small></span></label>
-      <label><input type="checkbox" name="direction" value="bpm" checked><span>BPM 与传统行业数字化<small>BPM &amp; Digital Transformation</small></span></label>
-      <label><input type="checkbox" name="direction" value="agent" checked><span>AI Agent 应用开发<small>AI Agent Development</small></span></label>
-      <label><input type="checkbox" name="direction" value="cloud-security" checked><span>云安全与云治理<small>Cloud Security &amp; Governance</small></span></label>
+      <label><input type="checkbox" name="direction" value="cloud" checked><span data-i18n="cloud">Cloud &amp; Distributed Systems</span></label>
+      <label><input type="checkbox" name="direction" value="software" checked><span data-i18n="software">Software Engineering</span></label>
+      <label><input type="checkbox" name="direction" value="security" checked><span data-i18n="security">IT Security &amp; Governance</span></label>
+      <label><input type="checkbox" name="direction" value="bpm" checked><span data-i18n="bpm">BPM &amp; Digital Transformation</span></label>
+      <label><input type="checkbox" name="direction" value="agent" checked><span data-i18n="agent">AI Agent Development</span></label>
+      <label><input type="checkbox" name="direction" value="cloud-security" checked><span data-i18n="cloudSecurity">Cloud Security &amp; Governance</span></label>
     </div></fieldset>
-    <fieldset><legend>岗位类型</legend>
+    <fieldset><legend data-i18n="kind">Employment type</legend>
       <div class="types">
-        <label><input type="radio" name="kind" value="student" checked><span>在读岗位<small>Werkstudent · Praktikum · Internship</small></span></label>
-        <label><input type="radio" name="kind" value="regular"><span>毕业后正式岗位<small>Junior 及普通岗位</small></span></label>
+        <label><input type="radio" name="kind" value="student" checked><span data-i18n="student">Working student jobs &amp; internships</span></label>
+        <label><input type="radio" name="kind" value="regular"><span data-i18n="regular">Graduate &amp; non-senior roles</span></label>
       </div>
     </fieldset>
-    <div class="actions"><div><button class="locate" id="locate" type="button">使用我的位置</button><p id="location" class="note" aria-live="polite">按距纽伦堡市中心的直线距离排序</p></div><button class="start" id="start" type="button">开始搜索</button></div>
+    <div class="actions"><div><button class="locate" id="locate" type="button" data-i18n="locate">Use my location</button><p id="location" class="note" aria-live="polite" data-i18n="locationDefault">Sorted by straight-line distance from central Nuremberg</p></div><button class="start" id="start" type="button" data-i18n="start">Start search</button></div>
   </section>
   <section class="results" aria-labelledby="result-heading">
-    <div class="result-header"><h2 id="result-heading">搜索结果</h2></div>
-    <div class="result-views" role="group" aria-label="切换结果视图">
-      <button type="button" id="show-jobs" aria-pressed="true" aria-controls="job-view">匹配岗位</button>
-      <button type="button" id="show-incomplete" aria-pressed="false" aria-controls="incomplete-view">未完整读取</button>
+    <div class="result-header"><h2 id="result-heading" data-i18n="results">Search results</h2></div>
+    <div class="result-views" role="group" aria-label="Switch result view" data-i18n-label="viewLabel">
+      <button type="button" id="show-jobs" aria-pressed="true" aria-controls="job-view" data-i18n="matching">Matching jobs</button>
+      <button type="button" id="show-incomplete" aria-pressed="false" aria-controls="incomplete-view" data-i18n="incomplete">Incomplete sources</button>
     </div>
-    <p id="status" class="note" role="status">点击开始搜索即可重新访问企业招聘网站。每周日也会自动复查。</p>
+    <p id="status" class="note" role="status" data-i18n="initial">Start a fresh search of employer websites. Sources also refresh every Sunday.</p>
     <progress id="progress" hidden></progress>
     <div id="job-view">
       <p id="count"></p>
@@ -49,10 +49,10 @@
     <div id="incomplete-view" hidden>
       <div class="coverage-toolbar">
         <p id="coverage-summary" class="note"></p>
-        <select id="coverage-filter" aria-label="按读取状态筛选">
-          <option value="all">全部状态</option>
-          <option value="partial">部分读取</option>
-          <option value="failed">未能读取</option>
+        <select id="coverage-filter" aria-label="Filter by source status" data-i18n-label="filterLabel">
+          <option value="all" data-i18n="all">All statuses</option>
+          <option value="partial" data-i18n="partial">Partially read</option>
+          <option value="failed" data-i18n="failed">Could not read</option>
         </select>
       </div>
       <p id="coverage-empty" class="note"></p>
@@ -60,7 +60,7 @@
     </div>
   </section>
   <details id="directory" class="results">
-    <summary>按城市查看企业招聘目录</summary>
+    <summary data-i18n="directory">Employer directory by city</summary>
     <p id="directory-status" class="note" role="status"></p>
     <div id="directory-cities"></div>
   </details>

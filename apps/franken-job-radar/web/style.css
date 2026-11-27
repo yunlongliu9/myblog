@@ -90,3 +90,6 @@ footer { padding: 1.7rem 0; color: var(--mute); font-size: .875rem; letter-spaci
 .coverage-link { color: var(--primary); padding-block: .45rem; font-size: .9rem; font-weight: 650; text-underline-offset: .2rem; }
 
 .service-back { flex: none; color: #eaf2ff; font-size: .875rem; text-underline-offset: .2rem; }
+
+.header-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .45rem .8rem; }
+.language-switch { min-height: 2.5rem; padding: .35rem .65rem; border: 1px solid #8db7ff; border-radius: .55rem; background: transparent; color: #eaf2ff; font-weight: 650; }
