@@ -70,3 +70,20 @@ docker compose restart nginx
 curl.exe --fail http://localhost/services
 curl.exe --fail http://localhost/services/franken-job-radar/api/status
 ```
+
+## Supermarket offers at /service/food
+
+[Open the offers page](https://yunlongliu.tech/service/food/). Nginx serves the page and
+its assets from [coupon-necessarities](https://yunlongliu9.github.io/coupon-necessarities/).
+The existing GitHub Actions workflow updates the offer data every Monday at 05:00
+Europe/Berlin. Weekly updates need no changes on the Windows host.
+
+Run once from the `myblog` checkout on the Windows host:
+
+```powershell
+git pull --ff-only
+docker compose exec nginx nginx -t
+docker compose restart nginx
+curl.exe --fail --location http://localhost/service/food
+curl.exe --fail http://localhost/service/food/offers.json
+```
