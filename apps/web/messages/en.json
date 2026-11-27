@@ -18,6 +18,7 @@
 
 },
   "Navbar": {
+    "news": "News",
     "home": "Home",
     "knowledge": "Knowledge",
     "explore": "Explore",

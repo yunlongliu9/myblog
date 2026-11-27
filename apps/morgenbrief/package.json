@@ -1,0 +1,19 @@
+{
+  "name": "morgenbrief",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "node build/backend/node-server.js",
+    "test": "npm run build && node --test test/*.test.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.7",
+    "esbuild": "0.25.12",
+    "typescript": "5.9.3"
+  }
+}

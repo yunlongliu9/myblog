@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="用德语阅读当日德国新闻，按句展开英语和中文翻译。">
+<title>Morgenbrief · 德国新闻简报</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap">
+<link rel="stylesheet" href="/news/style.css">
+<script type="module" src="/news/reader-controller.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap bar"><a class="brand" href="#top"><span class="logo" aria-hidden="true">▤</span><span>Morgenbrief<small>德国新闻简报</small></span></a><nav aria-label="页面导航"><a href="#top" class="nav-active">每日简报</a><a href="#study">学习总结</a></nav><div class="languages"><b>DE</b> <span>·</span> EN <span>·</span> 中文</div></div></header>
+<main id="top" class="wrap">
+<section class="hero" aria-labelledby="title">
+<div class="hero-copy"><div class="kicker"><span></span><span id="issue"></span></div><h1 id="title" lang="de"></h1><p id="subtitle"></p><div id="metadata" class="metadata"></div></div>
+<figure><img src="/news/berlin.webp" fetchpriority="high" alt="德国柏林国会大厦，编辑配图"><figcaption>BERLIN, DEUTSCHLAND</figcaption></figure>
+</section>
+<div class="layout">
+<article id="article"><div class="article-head"><div><div class="eyebrow">DIE TAGESLEKTÜRE</div><h2>今日简报</h2></div><span class="original">DE <span>德语原文</span></span></div>
+<div class="translation-bar" role="group" aria-label="全文翻译"><strong>全文翻译</strong><div class="translation-actions"><button id="allEn" class="all-translation" type="button" aria-pressed="false" aria-controls="body" disabled>EN 英文</button><button id="allCn" class="all-translation" type="button" aria-pressed="false" aria-controls="body" disabled>CN 中文</button></div></div>
+<div id="readerFeedback" class="reader-feedback" hidden><span id="readerFeedbackText" role="status"></span> <button id="readerRetry" type="button" hidden>重试</button></div><div id="body"></div></article>
+<aside aria-label="阅读设置和目录">
+<div class="panel"><h2>阅读设置</h2><p class="label">德语等级</p><div class="levels" role="group" aria-label="德语等级"><button type="button" data-level="A1" aria-pressed="false">A1</button><button type="button" data-level="A2" aria-pressed="false">A2</button><button type="button" data-level="B1" aria-pressed="false">B1</button><button type="button" data-level="B2" aria-pressed="false">B2</button><button type="button" data-level="C1" aria-pressed="false">C1</button></div><p class="help" id="levelHelp"></p><div class="divider"></div><div class="reading"><span>阅读进度</span><span id="percent">0%</span></div><progress id="progress" max="100" value="0" aria-label="阅读进度"></progress></div>
+<div class="panel contents"><h2>本期目录</h2><div id="contents"></div><a class="study-link" href="#study">学习总结</a></div>
+<div class="edition-actions"><button id="next" class="next">下一篇简报</button><button id="previous" class="previous" hidden>上一篇简报</button><p id="editionStatus" role="status"></p></div>
+</aside>
+</div>
+<section id="study" class="study"><div class="eyebrow">SPRACHWERKSTATT</div><h2>学习总结 <span id="studyLevel"></span></h2><div id="studyGrid"></div></section>
+<div class="end-actions"><button id="nextEnd" class="next">下一篇简报</button></div>
+<details class="sources"><summary>本期新闻来源</summary><ul id="sources"></ul></details>
+</main>
+<footer><div class="wrap"><b>Morgenbrief</b><a href="/">返回个人网站</a></div></footer>
+</body></html>

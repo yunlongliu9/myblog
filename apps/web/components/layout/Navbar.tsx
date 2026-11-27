@@ -45,6 +45,10 @@ export default async function Navbar() {
           <Dropdown label={t("knowledge")} items={knowledgeItems} />
           <Dropdown label={t("explore")} items={exploreItems} />
 
+          <a href="/news" className="transition-colors hover:text-blue-500">
+            {t("news")}
+          </a>
+
           {navItems.map((item) => (
             <NavLink
               key={item.href}
@@ -70,6 +74,7 @@ export default async function Navbar() {
           <MobileMenu
             knowledgeLabel={t("knowledge")}
             exploreLabel={t("explore")}
+            newsLabel={t("news")}
             knowledgeItems={knowledgeItems}
             exploreItems={exploreItems}
             navItems={navItems}

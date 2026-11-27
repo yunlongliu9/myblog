@@ -13,6 +13,7 @@ type NavItem = {
 type MobileMenuProps = {
   knowledgeLabel: string;
   exploreLabel: string;
+  newsLabel: string;
   knowledgeItems: NavItem[];
   exploreItems: NavItem[];
   navItems: NavItem[];
@@ -21,6 +22,7 @@ type MobileMenuProps = {
 export default function MobileMenu({
   knowledgeLabel,
   exploreLabel,
+  newsLabel,
   knowledgeItems,
   exploreItems,
   navItems,
@@ -115,6 +117,10 @@ useEffect(() => {
                 {item.label}
               </Link>
             ))}
+
+            <a href="/news" className="font-semibold hover:text-blue-500">
+              {newsLabel}
+            </a>
 
             {navItems.map((item) => (
               <Link
