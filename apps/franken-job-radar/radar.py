@@ -267,6 +267,78 @@ def expiry(value):
         return False
 
 
+DUTIES_HEADING = re.compile(
+    r"\b(?:diese aufgaben warten auf dich|deine aufgaben|ihre aufgaben|das erwartet dich|"
+    r"was du bei uns machst|your (?:tasks|responsibilities)|what you(?:'ll| will) do|responsibilities)\b",
+    re.I,
+)
+PROFILE_HEADING = re.compile(r"\b(?:wer wir sind|über uns|about us|who we are)\b", re.I)
+DUTIES_END = re.compile(
+    r"\b(?:dein profil|ihr profil|was du mitbringst|was sie mitbringen|das bringst du mit|"
+    r"damit beeindruckst du uns|your profile|qualifications|requirements|what you bring|"
+    r"was wir bieten|was wir dir bieten|das bieten wir|deine benefits|unsere benefits|what we offer|your benefits|"
+    r"dein umfeld|dein kontakt|were we able to|wer wir sind|über uns|about us|who we are)\b",
+    re.I,
+)
+TECH_TASK = re.compile(
+    r"entwick(?:el|l)|programmier|implement|integrier|betreib|administr|konfigurier|digitalisier(?:en|st|t)\b|"
+    r"automatisier(?:en|st|t)\b|gestalt|aufbau|einführ|migrier|überwach|betreu|wartung|"
+    r"deploy|develop|build|design|maintain|monitor|operate|test|integrat|configur|migrat|automat(?:e|ing)",
+    re.I,
+)
+TOPIC_EXTRA = {
+    "software": r"\b(?:informatiker(?:in)?|fachinformatiker(?:in)?|wirtschaftsinformatik|systemintegration|"
+                r"software|sap|erp|it.systeme?|it.support|it.administrat\w*|data engineer\w*|"
+                r"computer scientist|informatik|systemadministrator(?:in)?)\b",
+    "bpm": r"it.projektmanagement|digital project|digital process|process automation|digitale prozess|power platform",
+}
+DIGITAL_BPM = re.compile(
+    r"digitalisier|digital transformation|digitale? prozess|digital process|process mining|"
+    r"prozes[sz]automatisierung|process automation|workflow automation|low[- ]code|"
+    r"business process management|\bbpmn?\b|\brpa\b|power platform|it.projektmanagement|digital project",
+    re.I,
+)
+RELEVANCE_VERSION = 1
+
+
+def match_topics(text, *, technical, title=False):
+    found = {
+        key for key, pattern in DIRECTIONS.items()
+        if re.search(pattern, text, re.I)
+    }
+    found.update(key for key, pattern in TOPIC_EXTRA.items() if re.search(pattern, text, re.I))
+    if not technical and "bpm" in found and not DIGITAL_BPM.search(text):
+        found.remove("bpm")
+    if title and SOFTWARE_TITLE.search(text) and not OTHER_DEVELOPER.search(text):
+        found.add("software")
+    return found
+
+
+def job_directions(title, description, *, technical):
+    title_topics = match_topics(title, technical=technical, title=True)
+    duties = DUTIES_HEADING.search(description)
+    if duties:
+        description = description[duties.end():]
+    elif PROFILE_HEADING.search(description):
+        description = PROFILE_HEADING.split(description, maxsplit=1)[0]
+    duties_text = DUTIES_END.split(description, maxsplit=1)[0]
+
+    topics = set(title_topics)
+    for clause in re.split(r"[.!?](?:\s|$)|[\n;•]+", duties_text):
+        if TECH_TASK.search(clause) or (technical and duties):
+            clause_topics = match_topics(clause, technical=technical)
+            if "agent" in clause_topics and not re.search(
+                r"entwick(?:el|l)|develop|build|implement|integrat|programmier|engineer|orchestrat", clause, re.I
+            ):
+                clause_topics.remove("agent")
+            topics.update(clause_topics)
+    if OFF_TOPIC_TITLE.search(title) and not title_topics.intersection(
+        {"cloud", "software", "security", "agent", "cloud-security"}
+    ):
+        return []
+    return [key for key in DIRECTIONS if key in topics]
+
+
 def extract(raw, employer, page, base):
     title = plain(raw.get("title")).strip()
     if not title or re.search(r"initiativbewerbung|unsolicited application|speculative application|talent pool", title, re.I) or expiry(raw.get("validThrough")):
@@ -276,22 +348,10 @@ def extract(raw, employer, page, base):
     kind = job_type(title, employment, description)
     if not kind:
         return []
-    role_text = re.split(
-        r"\b(?:was wir bieten|was wir dir bieten|das bieten wir|deine benefits|unsere benefits|what we offer|your benefits|über uns|about us)\b",
-        description, maxsplit=1, flags=re.I,
-    )[0]
-    directions = [key for key, expr in DIRECTIONS.items() if re.search(expr, title + " " + role_text, re.I)]
-    if "software" not in directions and SOFTWARE_TITLE.search(title) and not OTHER_DEVELOPER.search(title):
-        directions.append("software")
-    if "agent" in directions and not re.search(DIRECTIONS["agent"], title, re.I):
-        application = r"entwickl|develop|build|implement|integrat|programmier|engineer|orchestrat"
-        if not re.search(
-            rf"(?:{application}).{{0,110}}(?:{DIRECTIONS['agent']})|(?:{DIRECTIONS['agent']}).{{0,110}}(?:{application})",
-            role_text, re.I | re.S,
-        ):
-            directions.remove("agent")
-    if not directions or (OFF_TOPIC_TITLE.search(title) and not any(
-            re.search(DIRECTIONS[key], title, re.I) for key in ("cloud", "software", "security", "agent", "cloud-security"))):
+    # Preserve role sections and list items before separating duties from the employer profile.
+    role_description = plain(re.sub(r"</(?:p|li|h[1-6]|div)>|<br\s*/?>", "\n", str(raw.get("description") or ""), flags=re.I))
+    directions = job_directions(title, role_description, technical=employer in TECH_EMPLOYERS)
+    if not directions:
         return []
     org = raw.get("hiringOrganization")
     company = plain(org.get("name") if isinstance(org, dict) else org).strip()
@@ -318,6 +378,7 @@ def extract(raw, employer, page, base):
         if city:
             output.append(dict(title=title, company=company or employer, city=city, url=url, kind=kind,
                                directions=directions, posted=published(raw.get("datePosted")),
+                               relevance_version=RELEVANCE_VERSION,
                                lat=CITIES[city][0], lon=CITIES[city][1]))
     return output
 
@@ -461,7 +522,8 @@ def check_robots(url, policies):
 
 
 EMPLOYERS = rows("employers.tsv")
-PRIORITY_EMPLOYERS = {row[0] for row in EMPLOYERS if row[3:] == ["priority"]}
+PRIORITY_EMPLOYERS = {row[0] for row in EMPLOYERS if "priority" in row[3:]}
+TECH_EMPLOYERS = {row[0] for row in EMPLOYERS if "it" in row[3:]}
 
 
 def priority_employer(employer, city):
@@ -749,7 +811,18 @@ class Handler(BaseHTTPRequestHandler):
             self.send({"cities": employer_directory(), "total": len(SOURCES)})
         elif path == "/api/inventory":
             inventory = read_inventory()
-            sources = list(inventory.get("sources", {}).values())
+            sources = []
+            for source in inventory.get("sources", {}).values():
+                technical = source["company"] in TECH_EMPLOYERS
+                verified_jobs = []
+                for job in source["jobs"]:
+                    if job.get("relevance_version") == RELEVANCE_VERSION:
+                        verified_jobs.append(job)
+                        continue
+                    directions = job_directions(job["title"], "", technical=technical)
+                    if directions:
+                        verified_jobs.append({**job, "directions": directions})
+                sources.append({**source, "jobs": verified_jobs})
             self.send(public_run({"sources": sources, "done": True, "finished": inventory.get("finished")}))
         elif path == "/api/status":
             with LOCK:
