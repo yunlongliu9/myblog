@@ -2,7 +2,10 @@
   "Services": {
     "title": "Services",
     "radarDescription": "Weekly listings from employer sites across Franconia for IT and digitalisation roles, including working student positions, internships and graduate jobs.",
-    "openRadar": "Open job radar"
+    "openRadar": "Open job radar",
+    "foodTitle": "Weekly Supermarket Deals",
+    "foodDescription": "Compare weekly fruit, vegetable, chicken and beef offers from five Erlangen supermarkets by price per kilogram.",
+    "openFood": "View supermarket deals"
   },"Footer": {
 
   "description": "Technology, photography, travel and thoughts.",

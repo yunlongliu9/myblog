@@ -2,7 +2,10 @@
   "Services": {
     "title": "服务",
     "radarDescription": "每周更新弗兰肯地区企业官网的 IT 和数字化岗位，包括在读工作、实习及毕业后岗位。",
-    "openRadar": "打开求职雷达"
+    "openRadar": "打开求职雷达",
+    "foodTitle": "每周超市折扣",
+    "foodDescription": "查看埃尔朗根五家超市的蔬菜、水果、鸡肉和牛肉优惠，按公斤价格比价。",
+    "openFood": "查看超市折扣"
   },"Footer": {
   "description": "技术、摄影、旅行与思考。",
   "navigation": "网站导航",

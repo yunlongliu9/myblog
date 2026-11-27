@@ -2,7 +2,10 @@
   "Services": {
     "title": "Services",
     "radarDescription": "Wöchentlich aktualisierte IT- und Digitalisierungsstellen von Karriereseiten aus ganz Franken. Für Werkstudierende, Praktikantinnen und Praktikanten sowie Berufseinsteigende.",
-    "openRadar": "Jobradar öffnen"
+    "openRadar": "Jobradar öffnen",
+    "foodTitle": "Supermarktangebote der Woche",
+    "foodDescription": "Vergleiche Angebote für Obst, Gemüse, Hähnchen- und Rindfleisch aus fünf Erlanger Supermärkten nach Kilopreis.",
+    "openFood": "Supermarktangebote ansehen"
   },"Footer": {
   "description": "Technologie, Fotografie, Reisen und Gedanken.",
   "navigation": "Navigation",
