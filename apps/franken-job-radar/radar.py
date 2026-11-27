@@ -1,9 +1,9 @@
-"""Fresh crawls of employer career pages and a persistent Sunday inventory."""
+"""Fresh crawls of employer career pages and a persistent Friday inventory."""
 
 import argparse
 from collections import Counter, deque
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from html import unescape
 from ipaddress import ip_address
 from html.parser import HTMLParser
@@ -14,14 +14,13 @@ from pathlib import Path
 import os
 import re
 import socket
-from threading import Lock, Thread
+from threading import Event, Thread
 from time import sleep
 import unicodedata
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, unquote, urljoin, urlsplit, urlunsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 from urllib.robotparser import RobotFileParser
-from uuid import uuid4
 from xml.etree import ElementTree
 from zoneinfo import ZoneInfo
 
@@ -549,7 +548,7 @@ def fetch_issue(error):
     return "connection"
 
 
-def crawl(employer, city, root, previous=(), report_jobs=None):
+def crawl(employer, city, root, previous=()):
     budget = 32 if distance(CENTER, CITIES[city]) <= 50 else 25 if priority_employer(employer, city) else 12
     listing = root
     if host(root) in {"jobs.fraunhofer.de", "jobs.schaeffler.com", "jobs.zf.com", "jobs.koenig-bauer.com", "jobs.danfoss.com"}:
@@ -604,8 +603,6 @@ def crawl(employer, city, root, previous=(), report_jobs=None):
             for job in extract(raw, employer, page, root):
                 page_jobs[(job["url"], job["city"])] = job
         jobs.update(page_jobs)
-        if report_jobs and page_jobs:
-            report_jobs(page_jobs)
         if url == listing:
             empty = bool(re.search(r"keine (?:offenen stellen|passenden stellen|stellenangebote)|no (?:current openings|open positions|jobs found)",
                                    " ".join(doc.visible), re.I))
@@ -681,10 +678,8 @@ def employer_directory():
     ]
 
 
-LOCK = Lock()
-RUNS = {}
-ACTIVE = None
-COMPLETED = None
+UPDATING = Event()
+BERLIN = ZoneInfo("Europe/Berlin")
 
 
 def read_inventory():
@@ -718,75 +713,63 @@ def save_inventory(run):
     temporary.replace(INVENTORY)
 
 
-def execute(run):
-    global ACTIVE, COMPLETED
-    def report_jobs(jobs):
-        with LOCK:
-            run["live_jobs"].update(jobs)
-
+def execute(week):
+    run = {"week": week, "sources": [], "finished": None}
+    UPDATING.set()
     try:
-        prior = read_inventory().get("sources", {}) if run["week"] else {}
+        prior = read_inventory().get("sources", {})
         with ThreadPoolExecutor(max_workers=16) as pool:
-            tasks = {
-                pool.submit(crawl, *source, prior.get(source[2], {}).get("jobs", []), report_jobs): source
-                for source in SOURCES
-            }
+            tasks = {pool.submit(crawl, *source, prior.get(source[2], {}).get("jobs", [])): source
+                     for source in SOURCES}
             for task in as_completed(tasks):
                 employer, city, url = tasks[task]
                 try:
                     result = task.result()
                 except Exception:
-                    result = dict(company=employer, city=city, url=url, status="failed", pages=0, error=1, jobs=[], issues={"crawl:internal_error": 1})
-                with LOCK:
-                    run["sources"].append(result)
+                    result = dict(company=employer, city=city, url=url, status="failed", pages=0, error=1,
+                                  jobs=[], issues={"crawl:internal_error": 1})
+                run["sources"].append(result)
         run["finished"] = datetime.now(timezone.utc).isoformat()
         save_inventory(run)
-    except Exception as error:
-        run["error"] = "保存或抓取失败：" + str(error)
     finally:
-        with LOCK:
-            run["done"] = True
-            run.pop("live_jobs", None)
-            ACTIVE = None
-            COMPLETED = run["id"]
-            for old in list(RUNS)[:-12]:
-                RUNS.pop(old, None)
+        UPDATING.clear()
+    return run
 
 
-def start(week=None):
-    global ACTIVE
-    with LOCK:
-        if ACTIVE:
-            return None
-        run = dict(id=uuid4().hex, sources=[], live_jobs={}, total=len(SOURCES), done=False, week=week, finished=None)
-        RUNS[run["id"]] = run
-        ACTIVE = run["id"]
-        thread = Thread(target=execute, args=(run,), daemon=True)
-        thread.start()
-        return run["id"], thread
+def publication_week(now):
+    friday = now.date() - timedelta(days=(now.weekday() - 4) % 7)
+    if now.date() == friday and now.hour < 5:
+        friday -= timedelta(days=7)
+    return friday.isoformat()
 
 
 def schedule():
+    attempted = None
     while True:
-        now = datetime.now(ZoneInfo("Europe/Berlin"))
-        if now.weekday() == 6 and now.hour >= 5:
-            week = now.date().isoformat()
-            if read_inventory().get("week") != week:
-                start(week)
+        week = publication_week(datetime.now(BERLIN))
+        if week != attempted and read_inventory().get("week") != week:
+            attempted = week
+            try:
+                execute(week)
+            except Exception as error:
+                print(f"Weekly update failed: {error}", flush=True)
         sleep(60)
 
 
-def public_run(run):
-    result = {key: value for key, value in run.items() if key != "live_jobs"}
-    result["sources"] = [
-        {key: value for key, value in source.items() if key not in ("jobs", "removed")}
-        for source in run["sources"]
-    ]
-    if "live_jobs" in run:
-        result["jobs"] = list(run["live_jobs"].values())
-    else:
-        result["jobs"] = [job for source in run["sources"] for job in source["jobs"]]
-    return result
+def public_inventory(inventory, updating):
+    sources = []
+    jobs = []
+    for source in inventory.get("sources", {}).values():
+        sources.append({key: value for key, value in source.items() if key not in ("jobs", "removed")})
+        technical = source["company"] in TECH_EMPLOYERS
+        for job in source["jobs"]:
+            if job.get("relevance_version") == RELEVANCE_VERSION:
+                jobs.append(job)
+                continue
+            directions = job_directions(job["title"], "", technical=technical)
+            if directions:
+                jobs.append({**job, "directions": directions})
+    return {"sources": sources, "jobs": jobs, "finished": inventory.get("finished"), "updating": updating}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -802,32 +785,14 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = urlsplit(self.path).path
-        if path.startswith("/api/runs/"):
-            with LOCK:
-                run = RUNS.get(path.rsplit("/", 1)[-1])
-                response = public_run(run) if run else {"error": "找不到这一轮搜索"}
-            self.send(response, status=200 if run else 404)
-        elif path == "/api/employers":
+        if path == "/api/employers":
             self.send({"cities": employer_directory(), "total": len(SOURCES)})
         elif path == "/api/inventory":
-            inventory = read_inventory()
-            sources = []
-            for source in inventory.get("sources", {}).values():
-                technical = source["company"] in TECH_EMPLOYERS
-                verified_jobs = []
-                for job in source["jobs"]:
-                    if job.get("relevance_version") == RELEVANCE_VERSION:
-                        verified_jobs.append(job)
-                        continue
-                    directions = job_directions(job["title"], "", technical=technical)
-                    if directions:
-                        verified_jobs.append({**job, "directions": directions})
-                sources.append({**source, "jobs": verified_jobs})
-            self.send(public_run({"sources": sources, "done": True, "finished": inventory.get("finished")}))
+            updating = UPDATING.is_set()
+            self.send(public_inventory(read_inventory(), updating))
         elif path == "/api/status":
-            with LOCK:
-                self.send({"active": ACTIVE, "last": COMPLETED, "total": len(SOURCES), "cities": len(CITIES),
-                           "inventory": read_inventory().get("finished")})
+            self.send({"active": UPDATING.is_set(), "total": len(SOURCES), "cities": len(CITIES),
+                       "inventory": read_inventory().get("finished")})
         elif path in ("/", "/app.js", "/style.css"):
             file, mime = {"/": ("index.html", "text/html"), "/app.js": ("app.js", "text/javascript"),
                           "/style.css": ("style.css", "text/css")}[path]
@@ -836,17 +801,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send({"error": "页面不存在"}, status=404)
 
     def do_POST(self):
-        if self.path != "/api/runs":
-            self.send({"error": "页面不存在"}, status=404)
-            return
-        if self.headers.get("X-Radar-Search") != "1":
-            self.send({"error": "请从搜索页面发起"}, status=403)
-            return
-        started = start()
-        if not started:
-            self.send({"error": "已有一轮正在抓取。完成后可以开始新的搜索。"}, status=409)
-            return
-        self.send({"id": started[0]}, status=202)
+        self.send({"error": "Weekly results are read-only."}, status=405)
 
 
 if __name__ == "__main__":
@@ -856,10 +811,12 @@ if __name__ == "__main__":
     parser.add_argument("--crawl-once", action="store_true")
     options = parser.parse_args()
     if options.crawl_once:
-        run_id, worker = start()
-        worker.join()
-        results = RUNS[run_id]
-        print(json.dumps({key: value for key, value in public_run(results).items() if key != "jobs"}, ensure_ascii=False, indent=2))
-        raise SystemExit(int(bool(results.get("error") or not any(s["status"] != "failed" for s in results["sources"]))))
+        week = publication_week(datetime.now(BERLIN))
+        if read_inventory().get("week") == week:
+            print(f"Weekly snapshot already saved for {week}.")
+            raise SystemExit(0)
+        results = execute(week)
+        print(json.dumps(public_inventory(read_inventory(), False)["sources"], ensure_ascii=False, indent=2))
+        raise SystemExit(int(not any(s["status"] != "failed" for s in results["sources"])))
     Thread(target=schedule, daemon=True).start()
     ThreadingHTTPServer((options.host, options.port), Handler).serve_forever()

@@ -1,7 +1,5 @@
 const $ = (id) => document.getElementById(id);
-const start = $("start");
 const status = $("status");
-const progress = $("progress");
 const jobs = $("jobs");
 const showJobs = $("show-jobs");
 const showIncomplete = $("show-incomplete");
@@ -17,11 +15,10 @@ const messages = {
   kind: ["Employment type", "Beschäftigungsart", "岗位类型"],
   locate: ["Use my location", "Meinen Standort verwenden", "使用我的位置"],
   locationDefault: ["Sorted by straight-line distance from central Nuremberg", "Nach Luftlinie ab Nürnberger Innenstadt sortiert", "按到纽伦堡市中心的直线距离排序"],
-  start: ["Start search", "Suche starten", "开始搜索"],
   results: ["Search results", "Suchergebnisse", "搜索结果"],
   matching: ["Matching jobs", "Passende Stellen", "匹配岗位"],
   incomplete: ["Incomplete sources", "Unvollständig gelesene Quellen", "未完整读取"],
-  initial: ["Start a fresh search of employer websites. Sources also refresh every Sunday.", "Starte eine neue Suche auf den Karriereseiten. Die Quellen werden auch sonntags aktualisiert.", "点击开始搜索即可重新访问企业招聘网站。每周日也会自动复查。"],
+  initial: ["Results refresh automatically every Friday at 05:00 Berlin time.", "Die Ergebnisse werden freitags um 05:00 Uhr (Berlin) automatisch aktualisiert.", "结果于每周五柏林时间 05:00 自动更新。"],
   all: ["All statuses", "Alle Status", "全部状态"],
   partial: ["Partially read", "Teilweise gelesen", "部分读取"],
   failed: ["Could not read", "Nicht lesbar", "未能读取"],
@@ -58,30 +55,24 @@ const messages = {
   coverageSummary: ["{0} partially read · {1} could not be read. You can open the employer sites directly.", "{0} teilweise gelesen · {1} nicht lesbar. Die Karriereseiten lassen sich direkt öffnen.", "{0} 个部分读取，{1} 个未能读取。可直接打开官网查看。"],
   coverageFilterEmpty: ["No sources match this filter.", "Keine Quellen entsprechen diesem Filter.", "当前筛选下没有来源。"],
   coverageDone: ["No incomplete sources were recorded.", "Es wurden keine unvollständig gelesenen Quellen erfasst.", "本次记录中没有未完整读取的来源。"],
-  coverageRunning: ["Search in progress. No incomplete sources so far.", "Suche läuft. Bisher gibt es keine unvollständig gelesenen Quellen.", "正在搜索，目前没有未完整读取的来源。"],
-  coverageInitial: ["Incomplete sources will appear here after a search starts.", "Nach dem Start der Suche erscheinen hier unvollständig gelesene Quellen.", "开始搜索后，这里会显示未完整读取的招聘来源。"],
+  coverageRunning: ["The first weekly update is running. Source reports will appear when it finishes.", "Die erste Wochenaktualisierung läuft. Die Quellenberichte erscheinen danach.", "首次周度更新正在运行，完成后会显示来源报告。"],
+  coverageInitial: ["Source reports will appear after the first weekly update.", "Die Quellenberichte erscheinen nach der ersten Wochenaktualisierung.", "首次周度更新完成后会显示来源报告。"],
   noReason: ["No details were recorded.", "Es wurden keine Details erfasst.", "本次没有记录详细原因。"],
   pages: ["Pages attempted: {0}", "Aufgerufene Seiten: {0}", "已尝试 {0} 页"],
   official: ["Employer careers site", "Karriereseite des Arbeitgebers", "官网招聘入口"],
   sourcesCount: ["{0} sources", "{0} Quellen", "{0} 个来源"],
-  searching: ["Searching…", "Suche läuft…", "正在搜索…"],
-  runDone: ["Search complete. {0} of {1} sources checked, {2} incomplete.", "Suche abgeschlossen. {0} von {1} Quellen geprüft, {2} unvollständig.", "搜索完成。已检查 {0}/{1} 个来源，其中 {2} 个未完整读取。"],
-  runProgress: ["Checking employer websites. {0} of {1} sources checked, {2} incomplete.", "Karriereseiten werden geprüft. {0} von {1} Quellen geprüft, {2} unvollständig.", "正在检查企业官网。已检查 {0}/{1} 个来源，其中 {2} 个未完整读取。"],
   requestFailed: ["Request failed. Please try again.", "Anfrage fehlgeschlagen. Bitte erneut versuchen.", "请求失败，请重试。"],
-  busy: ["A search is already running.", "Es läuft bereits eine Suche.", "已有一轮搜索正在运行。"],
-  monitorFailed: ["Could not load search progress.", "Der Suchfortschritt konnte nicht geladen werden.", "无法读取搜索进度。"],
-  runFailed: ["The search could not finish or save its results.", "Die Suche konnte nicht abgeschlossen oder gespeichert werden.", "搜索未能完成或保存结果。"],
-  selectDirection: ["Select at least one field of work.", "Wähle mindestens eine Fachrichtung aus.", "请至少选择一个专业方向。"],
-  starting: ["Starting a fresh search…", "Eine neue Suche wird gestartet…", "正在启动新一轮搜索…"],
   locationUnavailable: ["Location is unavailable. Sorted by distance from central Nuremberg.", "Standort nicht verfügbar. Sortierung ab Nürnberger Innenstadt.", "浏览器定位不可用，将按到纽伦堡市中心的距离排序。"],
   locationCurrent: ["Sorted by straight-line distance from your location", "Nach Luftlinie ab deinem Standort sortiert", "按到你当前位置的直线距离排序"],
   locationFailed: ["Could not access your location. Sorted by distance from central Nuremberg.", "Kein Zugriff auf deinen Standort. Sortierung ab Nürnberger Innenstadt.", "未能获取你的位置，将按到纽伦堡市中心的距离排序。"],
-  inventory: ["Last saved search: {0}. Start a search to check employer websites again.", "Letzte gespeicherte Suche: {0}. Starte eine neue Suche, um die Karriereseiten erneut zu prüfen.", "最近保存的搜索记录：{0}。开始搜索可重新查询企业官网。"],
-  catalog: ["Directory: {0} careers sites and {1} cities and towns. Start a search to check the sites.", "Verzeichnis: {0} Karriereseiten und {1} Städte und Gemeinden. Starte eine Suche, um die Seiten zu prüfen.", "目录包含 {0} 个招聘入口和 {1} 个城市及市镇。点击开始搜索以检查官网。"],
+  inventory: ["Weekly results updated {0}. Automatic refresh every Friday.", "Wochenstand vom {0}. Automatische Aktualisierung jeden Freitag.", "本周结果更新于 {0}。每周五自动更新。"],
   directoryLoading: ["Loading the saved directory…", "Das gespeicherte Verzeichnis wird geladen…", "正在读取已保存的目录…"],
   directoryCount: ["{0} cities and towns · {1} careers sites", "{0} Städte und Gemeinden · {1} Karriereseiten", "{0} 个城市和市镇 · {1} 个招聘入口"],
   directoryFailed: ["Could not load the directory. Close and reopen it to retry.", "Das Verzeichnis konnte nicht geladen werden. Schließe und öffne es erneut.", "读取目录失败，请合上后重新打开。"],
   careersCount: ["{0} careers sites", "{0} Karriereseiten", "{0} 个招聘入口"],
+  pendingInventory: ["Weekly update in progress. Showing results from {0}.", "Die Wochenaktualisierung läuft. Angezeigt wird der Stand vom {0}.", "正在更新本周结果，当前显示 {0} 保存的结果。"],
+  firstUpdate: ["The first weekly update is running. Results will appear once it finishes.", "Die erste Wochenaktualisierung läuft. Die Ergebnisse erscheinen danach.", "首次周度更新正在运行，完成后会显示结果。"],
+  loadFailed: ["Could not load the weekly results. Reload the page to try again.", "Die Wochenergebnisse konnten nicht geladen werden. Lade die Seite erneut.", "无法加载本周结果，请刷新页面重试。"],
   languageLabel: ["Page language", "Seitensprache", "页面语言"],
 };
 const locales = ["en", "de", "zh-Hans"];
@@ -107,7 +98,7 @@ function message(key, ...args) {
 
 function renderStatus() {
   const [key, ...args] = statusMessage;
-  const values = key === "inventory" ? [new Date(args[0]).toLocaleString(language)] : args;
+  const values = ["inventory", "pendingInventory"].includes(key) ? [new Date(args[0]).toLocaleString(language, { timeZone: "Europe/Berlin" })] : args;
   status.textContent = t(key, ...values);
 }
 
@@ -126,7 +117,6 @@ function applyLanguage() {
   for (const button of languageButtons) {
     button.setAttribute("aria-pressed", String(button.dataset.locale === language));
   }
-  start.textContent = t(start.disabled ? "searching" : "start");
   $("location").textContent = t(locationMessage);
   if (directoryMessage) $("directory-status").textContent = t(...directoryMessage);
   for (const node of document.querySelectorAll("[data-careers-count]")) {
@@ -185,7 +175,7 @@ function render() {
     card.append(text, link);
     return card;
   }));
-  if (current.done && sorted.length === 0) jobs.append(element("p", t("emptyJobs"), "note"));
+  if (current.finished && sorted.length === 0) jobs.append(element("p", t("emptyJobs"), "note"));
 }
 
 function renderCoverage() {
@@ -207,8 +197,8 @@ function renderCoverage() {
     : "";
   $("coverage-empty").textContent = visible.length ? "" : (
     incomplete.length ? t("coverageFilterEmpty") :
-    current?.done ? t("coverageDone") :
-    start.disabled ? t("coverageRunning") :
+    current?.finished ? t("coverageDone") :
+    current?.updating ? t("coverageRunning") :
     t("coverageInitial")
   );
   $("sources").replaceChildren(...Array.from(groups).sort(([a], [b]) => a.localeCompare(b, "de")).map(([city, entries]) => {
@@ -256,58 +246,10 @@ coverageFilter.addEventListener("change", renderCoverage);
 async function request(path, options) {
   const response = await fetch(path, options);
   const data = await response.json();
-  if (!response.ok) throw new Error(response.status === 409 ? "busy" : "requestFailed");
+  if (!response.ok) throw new Error("requestFailed");
   return data;
 }
 
-async function monitor(id) {
-  start.disabled = true;
-  start.textContent = t("searching");
-  progress.hidden = false;
-  try {
-    while (true) {
-      const lastSourceCount = current?.sources.length;
-      const wasDone = current?.done;
-      current = await request("./api/runs/" + encodeURIComponent(id));
-      const { sources, total, done, error } = current;
-      const incomplete = sources.filter((source) => source.status !== "ok").length;
-      progress.max = total || 1;
-      progress.value = sources.length;
-      message(error ? "runFailed" : done ? "runDone" : "runProgress", sources.length, total, incomplete);
-      if (lastSourceCount !== sources.length || wasDone !== done) renderCoverage();
-      render();
-      if (done) break;
-      await new Promise((resolve) => setTimeout(resolve, 800));
-    }
-  } catch (error) {
-    message("monitorFailed");
-  } finally {
-    start.disabled = false;
-    start.textContent = t("start");
-  }
-}
-
-start.addEventListener("click", async () => {
-  if (!document.querySelector('input[name="direction"]:checked')) {
-    message("selectDirection");
-    return;
-  }
-  start.disabled = true;
-  try {
-    const { id } = await request("./api/runs", { method: "POST", headers: { "X-Radar-Search": "1" } });
-    current = null;
-    jobs.replaceChildren();
-    $("count").textContent = "";
-    coverageFilter.value = "all";
-    renderCoverage();
-    message("starting");
-    await monitor(id);
-  } catch (error) {
-    message(error.message === "busy" ? "busy" : "requestFailed");
-    start.disabled = false;
-    start.textContent = t("start");
-  }
-});
 document.querySelector(".filters").addEventListener("change", render);
 $("locate").addEventListener("click", () => {
   if (!navigator.geolocation) {
@@ -325,20 +267,21 @@ $("locate").addEventListener("click", () => {
   }, { timeout: 8000 });
 });
 
-request("./api/status").then(async ({ active, total, cities, inventory }) => {
-  if (active && !start.disabled) {
-    monitor(active);
-  } else if (!current && !start.disabled && inventory) {
-    const snapshot = await request("./api/inventory");
-    if (current || start.disabled) return;
-    current = snapshot;
-    message("inventory", snapshot.finished);
+async function loadWeeklyResults() {
+  try {
+    current = await request("./api/inventory");
+    if (current.finished) {
+      message(current.updating ? "pendingInventory" : "inventory", current.finished);
+    } else {
+      message(current.updating ? "firstUpdate" : "initial");
+    }
     renderCoverage();
     render();
-  } else if (!current && !start.disabled) {
-    message("catalog", total, cities);
+    if (current.updating || !current.finished) setTimeout(loadWeeklyResults, 15_000);
+  } catch {
+    message("loadFailed");
   }
-}).catch(() => {});
+}
 
 const directory = $("directory");
 directory.addEventListener("toggle", async () => {
@@ -376,3 +319,4 @@ directory.addEventListener("toggle", async () => {
 });
 
 applyLanguage();
+loadWeeklyResults();

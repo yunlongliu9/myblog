@@ -36,7 +36,7 @@
         <label><input type="radio" name="kind" value="regular"><span data-i18n="regular">Graduate &amp; non-senior roles</span></label>
       </div>
     </fieldset>
-    <div class="actions"><div><button class="locate" id="locate" type="button" data-i18n="locate">Use my location</button><p id="location" class="note" aria-live="polite" data-i18n="locationDefault">Sorted by straight-line distance from central Nuremberg</p></div><button class="start" id="start" type="button" data-i18n="start">Start search</button></div>
+    <div class="actions"><div><button class="locate" id="locate" type="button" data-i18n="locate">Use my location</button><p id="location" class="note" aria-live="polite" data-i18n="locationDefault">Sorted by straight-line distance from central Nuremberg</p></div></div>
   </section>
   <section class="results" aria-labelledby="result-heading">
     <div class="result-header"><h2 id="result-heading" data-i18n="results">Search results</h2></div>
@@ -44,8 +44,7 @@
       <button type="button" id="show-jobs" aria-pressed="true" aria-controls="job-view" data-i18n="matching">Matching jobs</button>
       <button type="button" id="show-incomplete" aria-pressed="false" aria-controls="incomplete-view" data-i18n="incomplete">Incomplete sources</button>
     </div>
-    <p id="status" class="note" role="status" data-i18n="initial">Start a fresh search of employer websites. Sources also refresh every Sunday.</p>
-    <progress id="progress" hidden></progress>
+    <p id="status" class="note" role="status" data-i18n="initial">Results refresh automatically every Friday at 05:00 Berlin time.</p>
     <div id="job-view">
       <p id="count"></p>
       <div id="jobs"></div>

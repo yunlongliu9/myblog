@@ -57,7 +57,7 @@ docker compose restart nginx
 
 ## Franken Job Radar at /services
 
-The Services page links to the radar at `/services/franken-job-radar/`. Nginx proxies that route, including its assets and search API, to the Python service on the Compose network. The service uses the employer directory for fresh searches and stores crawl snapshots in the `franken-job-radar-data` volume. Its Sunday refresh uses the Europe/Berlin time zone.
+The Services page links to the radar at `/services/franken-job-radar/`. Nginx proxies that route, including its assets and search API, to the Python service on the Compose network. The service publishes a snapshot in the `franken-job-radar-data` volume every Friday at 05:00 Europe/Berlin, or after it starts if that update was missed. Visitors read the snapshot and cannot start a crawl.
 
 The radar was imported from [franken-job-radar at 6628e2b](https://github.com/yunlongliu9/franken-job-radar/commit/6628e2bb4e798122540d4d63f6cfd2301fbff11b) with relative frontend URLs so it works under the Services route.
 

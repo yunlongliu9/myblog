@@ -38,14 +38,10 @@ input { accent-color: var(--primary); margin: .28rem 0 0; flex: none; width: 1.0
 button { font: inherit; cursor: pointer; }
 .locate { border: 0; color: var(--primary); background: transparent; font-size: .9rem; padding: 0; text-decoration: underline; text-underline-offset: .18rem; }
 .actions p { margin: .15rem 0 0; }
-.start { background: var(--primary); color: white; border: 0; border-radius: .65rem; padding: .75rem 1.45rem; font-weight: 750; min-width: 8rem; }
-.start:hover { background: #08358a; }
-.start:disabled { background: #52647e; cursor: wait; }
 .results { margin-top: 1rem; }
 .result-header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
 .result-header h2 { margin-bottom: .4rem; }
 #count { color: var(--primary); font-weight: 700; }
-progress { width: 100%; accent-color: var(--primary); }
 .job { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: 1rem 0; border-top: 1px solid var(--border); }
 .job h3, .job p { margin: 0; }
 .job a { flex-shrink: 0; color: var(--primary); font-weight: 650; text-underline-offset: .23rem; }
