@@ -19,6 +19,9 @@ export function createEditionController(service: EditionService) {
 
     try {
       const result = id ? await service.find(id) : await service.first(date ?? undefined);
+      if (!id && !date && result && searchParams.get("after") === result.edition.date) {
+        return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
+      }
       if (!result) return error(404, "Edition not found");
       return Response.json(result, { headers: { "Cache-Control": "no-cache" } });
     } catch (cause) {

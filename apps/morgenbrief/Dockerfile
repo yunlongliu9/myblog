@@ -12,6 +12,7 @@ RUN npm run build
 FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=3000
+ENV MORGENBRIEF_FEED_URL=https://raw.githubusercontent.com/yunlongliu9/myblog/main/content/morgenbrief/latest.json
 
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/build ./build

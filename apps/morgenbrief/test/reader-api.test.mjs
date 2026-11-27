@@ -29,6 +29,9 @@ test("Node serves the frontend and both non-overlapping editions through the API
   const response = await fetch(base + "/api/editions");
   assert.equal(response.status, 200);
   const first = await response.json();
+  const unchanged = await fetch(base + "/api/editions?after=" + first.edition.date);
+  assert.equal(unchanged.status, 204);
+  assert.equal(await unchanged.text(), "");
   const second = await (await fetch(base + "/api/editions/" + first.navigation.nextId)).json();
   assert.equal(first.navigation.previousId, null);
   assert.equal(second.navigation.previousId, first.edition.id);

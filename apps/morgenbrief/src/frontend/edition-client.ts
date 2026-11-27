@@ -6,3 +6,12 @@ export async function fetchEdition(id?: string): Promise<EditionResponse> {
   if (!response.ok) throw new Error(`Edition API returned HTTP ${response.status}`);
   return await response.json() as EditionResponse;
 }
+
+export async function fetchNewEdition(currentDate: string): Promise<EditionResponse | null> {
+  const response = await fetch("/news/api/editions?after=" + encodeURIComponent(currentDate), {
+    headers: { Accept: "application/json" }
+  });
+  if (response.status === 204) return null;
+  if (!response.ok) throw new Error(`Edition API returned HTTP ${response.status}`);
+  return await response.json() as EditionResponse;
+}

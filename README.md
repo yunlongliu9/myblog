@@ -37,3 +37,20 @@ curl.exe --fail http://localhost/news/api/editions
 ```
 
 Once the existing Cloudflare Tunnel is connected, the public route is https://yunlongliu.tech/news.
+
+### Automatic evening edition
+
+The container reads `content/morgenbrief/latest.json` from this repository. That data file
+holds two editions per date and may include the next scheduled publication.
+New issues become eligible at 18:00 in Europe/Berlin, including daylight-saving
+changes. The previous complete issue remains available during failed updates.
+An already-open reader checks for a new issue every 20 seconds while visible.
+
+To roll out this feed support the first time, rebuild only the `morgenbrief`
+container and restart Nginx. Updating the JSON content afterwards requires no rebuild.
+
+```powershell
+git pull --ff-only
+docker compose up -d --build --no-deps morgenbrief
+docker compose restart nginx
+```

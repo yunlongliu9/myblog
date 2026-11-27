@@ -1,5 +1,5 @@
 import type { EditionResponse, Level } from "../shared/edition.js";
-import { fetchEdition } from "./edition-client.js";
+import { fetchEdition, fetchNewEdition } from "./edition-client.js";
 import { ReaderView } from "./reader-view.js";
 import { isReadingLevel } from "./reading-levels.js";
 
@@ -18,6 +18,34 @@ let pending = false;
 let failedId: string | undefined;
 const recentlyRead = new Map<string, EditionResponse>();
 
+function showEdition(edition: EditionResponse) {
+  recentlyRead.delete(edition.edition.id);
+  recentlyRead.set(edition.edition.id, edition);
+  if (recentlyRead.size > 4) {
+    const oldest = recentlyRead.keys().next();
+    if (!oldest.done) recentlyRead.delete(oldest.value);
+  }
+  view.renderEdition(edition, level);
+  current = edition;
+}
+
+let refreshing = false;
+async function refreshDailyEdition() {
+  if (!current || pending || refreshing || document.hidden) return;
+  refreshing = true;
+  try {
+    const edition = await fetchNewEdition(current.edition.date);
+    if (!pending && edition && edition.edition.date > current.edition.date) {
+      showEdition(edition);
+      view.setLoading(false);
+    }
+  } catch {
+    // Keep the current article available and try again on the next refresh.
+  } finally {
+    refreshing = false;
+  }
+}
+
 async function loadEdition(id?: string) {
   if (pending) return;
   pending = true;
@@ -25,14 +53,7 @@ async function loadEdition(id?: string) {
   let failed = false;
   try {
     const edition = (id ? recentlyRead.get(id) : undefined) ?? await fetchEdition(id);
-    recentlyRead.delete(edition.edition.id);
-    recentlyRead.set(edition.edition.id, edition);
-    if (recentlyRead.size > 4) {
-      const oldest = recentlyRead.keys().next();
-      if (!oldest.done) recentlyRead.delete(oldest.value);
-    }
-    view.renderEdition(edition, level);
-    current = edition;
+    showEdition(edition);
     if (id) view.focusEdition();
   } catch {
     failed = true;
@@ -69,3 +90,6 @@ view.bind({
 });
 view.renderLevel(level);
 void loadEdition();
+
+window.setInterval(() => void refreshDailyEdition(), 20_000);
+window.addEventListener("focus", () => void refreshDailyEdition());
